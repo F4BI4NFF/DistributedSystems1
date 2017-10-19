@@ -6,4 +6,4 @@ José Eduardo Caimapo (Martillin) Rol: 201373573-8
 
 &&
 
-Fabián Fernández Rol: 201373539-8
+Fabián Fernández (NegroLokito) Rol: 201373539-8
