@@ -54,96 +54,83 @@ public class CONNECTION implements Runnable {
             e.printStackTrace();
             System.exit(-1);
         }
-        if(obj.get("comando").equals("PUT")){
-            //PUT
-            String name = obj.get("filename").toString();
-            this.Put(name);
+        if(obj.get("comando").equals("1")){
+            //Listar titanes
+            try{
+                this.ListarTitanes();
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
         }
-        else if (obj.get("comando").equals("GET")){
-            //GET
-            String name = obj.get("filename").toString();
-            this.Get(name);
+        else if (obj.get("comando").equals("2")){
+            //Cambiar distrito
+            String name = obj.get("distrit").toString();
+            try{
+                this.ChangeDistrit(name);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
         }
-        else if (obj.get("comando").equals("DELETE")){
-            //DELETE
-            String name = obj.get("filename").toString();
-            this.Delete(name);
+        else if (obj.get("comando").equals("3")){
+            //Capturar titan
+            Integer id = Integer.parseInt(obj.get("id").toString());
+            try{
+                this.Capturar(id);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
         }
-        else if (obj.get("comando").equals("LIST")){
-            //LIST
-            this.List();
+        else if (obj.get("comando").equals("4")){
+            //Asesinar titan
+            Integer id = Integer.parseInt(obj.get("id").toString());
+            try{
+                this.Asesinar(id);
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+        else if (obj.get("comando").equals("5")){
+            //Listar titanes capturados
+            try{
+                this.ListarCapturados();
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+        else if (obj.get("comando").equals("6")){
+            //Listar titanes asesinados
+            try{
+                this.ListarAsesinados();
+            } catch (Exception e){
+                System.out.println(e.getMessage());
+            }
         }
         else{
             System.out.println("Comando no reconocido, prueba nuevamente.");
             try{cs.close();}
-            catch (IOException e){System.out.println("Error al forar desconexion.");}
+            catch (IOException e){System.out.println("Error al formar desconexion.");}
         }
     }
 
-    public void sendFile(String fileName) {
-        try {
-            //handle file read
-            File myFile = new File(fileName);
-            byte[] mybytearray = new byte[(int) myFile.length()];
 
-            FileInputStream fis = new FileInputStream(myFile);
-            BufferedInputStream bis = new BufferedInputStream(fis);
-            //bis.read(mybytearray, 0, mybytearray.length);
-
-            DataInputStream dis = new DataInputStream(bis);
-            dis.readFully(mybytearray, 0, mybytearray.length);
-
-            //handle file send over socket
-            OutputStream os = cs.getOutputStream();
-
-            //Sending file name and file size to the server
-            DataOutputStream dos = new DataOutputStream(os);
-            dos.writeUTF(myFile.getName());
-            dos.writeLong(mybytearray.length);
-            dos.write(mybytearray, 0, mybytearray.length);
-            dos.flush();
-            System.out.println("File "+fileName+" sent to client.");
-        } catch (Exception e) {
-            System.err.println("File does not exist!");
-        }
-    }
-    public void receiveFile() {
-        try {
-            int bytesRead;
-
-            DataInputStream clientData = new DataInputStream(cs.getInputStream());
-
-            String fileName = clientData.readUTF();
-            OutputStream output = new FileOutputStream(("received_from_client_" + fileName));
-            long size = clientData.readLong();
-            byte[] buffer = new byte[1024];
-            while (size > 0 && (bytesRead = clientData.read(buffer, 0, (int) Math.min(buffer.length, size))) != -1) {
-                output.write(buffer, 0, bytesRead);
-                size -= bytesRead;
-            }
-
-            output.close();
-            clientData.close();
-
-            System.out.println("File "+fileName+" received from client.");
-        } catch (IOException ex) {
-            System.err.println("Client error. Connection closed.");
-        }
-    }
-    public void Get(String filename) throws CommandUnavailableException{
-        System.out.println("Hola soy get");
+    public void ListarTitanes() throws Exception{
+        os.writeUTF("Hola soy Listar");
+        System.out.println("Hola soy Listar");
 
     }
-    public void Put(String filename) throws CommandUnavailableException{
-        System.out.println("Hola soy put");
+    public void ListarCapturados() throws Exception{
+        System.out.println("Hola soy L Capturados");
     }
-    public void Delete(String filename) throws CommandUnavailableException{
-        System.out.println("Hola soy delete");
+    public void ListarAsesinados() throws Exception{
+        System.out.println("Hola soy L Asesiandos");
     }
-    public void List() throws CommandUnavailableException{
-        System.out.println("Hola soy list");
+    public void Capturar(int id) throws Exception{
+        System.out.println("Hola soy Capturar"+ id);
     }
-    public void Sincro() throws Exception {
-        System.out.println("Hola soy sincro");
+    public void Asesinar(int id) throws Exception {
+        System.out.println("Hola soy Asesinar"+ id);
+    }
+    public void ChangeDistrit(String name) throws  Exception{
+        System.out.println("Hola soy cambio de distrito a "+name);
     }
 }

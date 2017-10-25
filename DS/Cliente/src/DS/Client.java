@@ -1,10 +1,6 @@
 package DS;
 
 import org.json.simple.JSONObject;
-import org.kohsuke.args4j.Argument;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,37 +9,74 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Client {
-    @Option(name = "-port", usage = "Port to use")
-    private int port = 1234;
+    private String DistritName;
+    private String CentralServerIP;
+    private int CentralServerPort;
+    private String MultiCastListen;
 
-    private String hostname = "localhost";
+    public String getDistritName() {
+        return DistritName;
+    }
 
-    @Option(name = "-comando", usage = "command to execute (get put delte list)")
-    private String command = "";
+    public  void setDistritName(String distritName) {
+        this.DistritName = distritName;
+    }
 
-    //@Option(name="-blocksize",usage="blocksize to use")
-    //private int blocksize = 1024;
+    public String getCentralServerIP() {
+        return CentralServerIP;
+    }
 
-    @Argument
-    private static List<String> arguments = new ArrayList<String>();
+    public  void setCentralServerIP(String centralServerIP) {
+        this.CentralServerIP = centralServerIP;
+    }
+
+    public int getCentralServerPort() {
+        return CentralServerPort;
+    }
+
+    public  void setCentralServerPort(int centralServerPort) {
+        this.CentralServerPort = centralServerPort;
+    }
+
+    public String getMultiCastListen() {
+        return MultiCastListen;
+    }
+
+    public void setMultiCastListen(String multiCastListen) {
+        MultiCastListen = multiCastListen;
+    }
+
 
     public static void main(String[] args) {
         Client cliente = new Client();
         //CmdLineParser parser = new CmdLineParser(cliente);
         //parser.setUsageWidth(80);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("[Cliente] Ingresar IP Servidor Central");
+        cliente.setCentralServerIP(scanner.nextLine());
+        System.out.println("[Cliente] Ingresar Puerto Servidor Central");
+        cliente.setCentralServerPort(scanner.nextInt());
+        scanner.nextLine();
+        System.out.println("[Cliente] Introducir Nombre de Distrito a Investigar. Ej: Trost, Shiganshina");
+        cliente.setDistritName(scanner.nextLine());
+        //System.out.println("Distrito"+ cliente.getDistritName());
+
+        //parser.parseArgument(args);
+        //new CmdLineParser(cliente).parseArgument(args);
+        //cliente.setterFilename();
+        System.out.println("Iniciando cliente\n");
+        //String comando = cliente.getCommand();
+        //String filename = cliente.getFilename();
+        //SynchronisedFile filename = cliente.getFilename();
+        //Conexion a servidor
         try {
-            //parser.parseArgument(args);
-            new CmdLineParser(cliente).parseArgument(args);
-            //cliente.setterFilename();
-            System.out.println("Iniciando cliente\n");
-            //String comando = cliente.getCommand();
-            //String filename = cliente.getFilename();
-            //SynchronisedFile filename = cliente.getFilename();
-            //Conexion a servidor
-            try {
-                Socket s = new Socket(cliente.getHostname(), cliente.getPort());
+            Socket s = new Socket( cliente.getCentralServerIP(),cliente.getCentralServerPort());
+            int comando = 10;
+            while(comando != 0){
+                String param = null;
                 DataInputStream is = null;
                 DataOutputStream os = null;
                 try {
@@ -54,36 +87,53 @@ public class Client {
                     System.out.println("Conexion: " + e.getMessage());
                 }
                 System.out.println("Conexion aceptada.");
-                String initString = initJSON(cliente.getCommand(),cliente.getFilename());
+
+                //******//
+                //Menu  //
+                //******//
+                System.out.println("[Cliente] Consola");
+                System.out.println("[Cliente] (1) Listar Titanes");
+                System.out.println("[Cliente] (2) Cambiar Distrito");
+                System.out.println("[Cliente] (3) Capturar Titan");
+                System.out.println("[Cliente] (4) Asesinar Titan");
+                System.out.println("[Cliente] (5) Lista de Titanes Capturados");
+                System.out.println("[Cliente] (6) Lista de Titanes Asesinados");
+                System.out.println("[Cliente] (0) Desconectar");
+                //scanner.nextLine();
+                comando = scanner.nextInt();
+                if(comando == 2 || comando == 3 || comando == 4){
+                    param = scanner.nextLine();
+                }
+                String initString = initJSON(String.valueOf(comando), param);
+
+
                 os.writeUTF(initString);
                 String fromserver = is.readUTF();
                 System.out.println ("Server: "+ fromserver);
                 is.close();
                 os.close();
-
-            } catch (UnknownHostException e1) {
-                System.out.println("Socket: " + e1.getMessage());
-            } catch (IOException e2) {
-                System.out.println("Linea: " + e2.getMessage());
             }
-        } catch (CmdLineException e) {
-            //Hubo un error
-            System.err.println(e.getMessage());
-            System.err.println("java MainCliente [opciones...] argumentos...");
-            System.exit(-1);
-            //Se muestra cual fue el error
-            //parser.printUsage(System.err);
-            //System.err.println();
-            //Se muestran las opciones disponibles
-            //System.err.println("  Ejemplo: java MainClient"+parser.printExample(ALL));
-            return;
-        }
 
+        } catch (UnknownHostException e1) {
+            System.out.println("Socket: " + e1.getMessage());
+        } catch (IOException e2) {
+            System.out.println("Linea: " + e2.getMessage());
+        }
     }
+
+
     private static String initJSON(String mode,String name){
         JSONObject obj = new JSONObject();
         obj.put("comando",mode);
-        obj.put("filename",name);
+        if(obj.get("comando").equals("2")){
+            obj.put("distrit",name);
+        }
+        else if (obj.get("comando").equals("3")){
+            obj.put("id",name);
+        }
+        else if (obj.get("comando").equals("4")){
+            obj.put("id",name);
+        }
         return obj.toJSONString();
     }
 }

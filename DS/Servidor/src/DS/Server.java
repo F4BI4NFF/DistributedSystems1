@@ -1,58 +1,70 @@
 package DS;
 
-import org.kohsuke.args4j.*;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Server {
-    //@Option(name="-port",usage="Puerto a usar ( default 6980)")
-    private int port = 6980;
-    //@Option(name="-grupo",usage="Dirección del grupo multicast")
-    private int multiip;
-    private int listenport = 5080;
-    //@Option(name="-tipo",usage="Tipo de servidor ( default 0/central ,1/distrito)")
-    //private int tipo = 0;
+    private String MultiCastIP;
+    private int MultiCastPort;
 
-    //@Argument
-    //private static List<String> arguments = new ArrayList<String>();
+    private int ListenPort;
+
+
+    public String getMultiCastIP() {
+        return MultiCastIP;
+    }
+
+    public void setMultiCastIP(String multiCastIP) {
+        MultiCastIP = multiCastIP;
+    }
+
+    public int getMultiCastPort() {
+        return MultiCastPort;
+    }
+
+    public void setMultiCastPort(int multiCastPort) {
+        MultiCastPort = multiCastPort;
+    }
+
+    public int getListenPort() {
+        return ListenPort;
+    }
+
+    public void setListenPort(int listenPort) {
+        ListenPort = listenPort;
+    }
 
     //----------------//
     //Insertar customs//
     //----------------//
 
-    public int getPort() {
-        return port;
-    }
-    public void setListenport(int port){this.listenport = port;}
-    public int getListenport(){return listenport;}
+
 
     public static void main(String[] args){
         Server servidor = new Server();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("[Servidor Central] Ingresar Puerto de Trabajo Servidor Central");
+        servidor.setListenPort(scanner.nextInt());
+        scanner.close();
+
         try{
-            new CmdLineParser(servidor).parseArgument(args);
-            ServerSocket listenSocket = new ServerSocket(servidor.getPort());
+            ServerSocket listenSocket = new ServerSocket(servidor.getListenPort());
             System.out.println("Server Central en espera...");
             while (true) {
                 Socket cs = listenSocket.accept();
-                System.out.println("Nueva conexion entrante: ");
-                System.out.println("Puerto: " + servidor.getPort());
+                System.out.println("Nueva conexion entrante: "+ listenSocket.getLocalSocketAddress());
+                System.out.println("Puerto: " + listenSocket.getLocalPort() );
 
                 Thread t = new Thread(new CONNECTION(cs));
                 t.start();
             }
-        } catch (IOException e){
-                // Por omisión de texto se detecta el modo distrito
-                System.out.println("Server de Distrito detectado...");
-
-                //Logica servidor de distrito
-
-        } catch (CmdLineException e){
-            System.err.println(e.getMessage());
-            System.exit(-1);
+        } catch (IOException e) {
+            // Por omisión de texto se detecta el modo distrito
+            System.out.println(e.getMessage());
         }
     }
 }
