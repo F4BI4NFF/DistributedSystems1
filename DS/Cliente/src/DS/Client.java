@@ -85,6 +85,10 @@ public class Client {
                      cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir")) {
                     if (cmd.equals("1")) {
                         //Conexion aceptada
+
+                        //Conexion a distrito
+
+                        //mostrar consola
                         System.out.println("[Cliente] Consola");
                         for (cmd = console.readLine("[Cliente] (1) Listar Titanes\n[Cliente] (2) Cambiar Distrito\n[Cliente] (3) Capturar Titan\n[Cliente] (4) Asesinar Titan\n[Cliente] (5) Lista de Titanes Capturados\n[Cliente] (6) Lista de Titanes Asesinados\n[Cliente] (x) Desconectar\n");
                              !cmd.equals("x");

@@ -88,7 +88,7 @@ public class Server {
                     System.out.println("Server Central en espera...");
                     while (true) {
                         Socket cs = listenSocket.accept();
-                        console.readLine("Dar autorizacion a/"+listenSocket.getInetAddress() +" por Distrito"+)
+                        console.readLine("Dar autorizacion a/"+listenSocket.getInetAddress() +" por Distrito"+);
                         System.out.println("Nueva conexion entrante: "+ listenSocket.getLocalSocketAddress());
                         System.out.println("Puerto: " + listenSocket.getLocalPort() );
 
