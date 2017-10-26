@@ -52,8 +52,6 @@ public class Client {
 
     public static void main(String[] args) {
         Client cliente = new Client();
-        //CmdLineParser parser = new CmdLineParser(cliente);
-        //parser.setUsageWidth(80);
         Scanner scanner = new Scanner(System.in);
         System.out.println("[Cliente] Ingresar IP Servidor Central");
         cliente.setCentralServerIP(scanner.nextLine());
@@ -64,13 +62,8 @@ public class Client {
         cliente.setDistritName(scanner.nextLine());
         //System.out.println("Distrito"+ cliente.getDistritName());
 
-        //parser.parseArgument(args);
-        //new CmdLineParser(cliente).parseArgument(args);
-        //cliente.setterFilename();
         System.out.println("Iniciando cliente\n");
-        //String comando = cliente.getCommand();
-        //String filename = cliente.getFilename();
-        //SynchronisedFile filename = cliente.getFilename();
+
         //Conexion a servidor
         try {
             Socket s = new Socket( cliente.getCentralServerIP(),cliente.getCentralServerPort());

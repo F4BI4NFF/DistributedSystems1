@@ -27,7 +27,7 @@ public class CONNECTION implements Runnable {
                 os = new DataOutputStream(cs.getOutputStream());
                 try{
                     String comando = is.readUTF();
-                    System.out.println("Aqui en el servidor se ejecuta el comando :"+comando);
+                    System.out.println("Aqui en el servidor se ejecuta el comando : "+comando);
                     processMsg(comando);
                 }catch (CommandUnavailableException e) {
                     System.out.println(e);
@@ -119,18 +119,23 @@ public class CONNECTION implements Runnable {
 
     }
     public void ListarCapturados() throws Exception{
+        os.writeUTF("Hola soy Listar Capturados");
         System.out.println("Hola soy L Capturados");
     }
     public void ListarAsesinados() throws Exception{
-        System.out.println("Hola soy L Asesiandos");
+        os.writeUTF("Hola soy Listar Asesinados");
+        System.out.println("Hola soy L Asesinados");
     }
     public void Capturar(int id) throws Exception{
+        os.writeUTF("Hola soy Capturar");
         System.out.println("Hola soy Capturar"+ id);
     }
     public void Asesinar(int id) throws Exception {
+        os.writeUTF("Hola soy Asesinar");
         System.out.println("Hola soy Asesinar"+ id);
     }
     public void ChangeDistrit(String name) throws  Exception{
+        os.writeUTF("Hola soy cambio de distrito a "+name);
         System.out.println("Hola soy cambio de distrito a "+name);
     }
 }
