@@ -1,7 +1,10 @@
 package DS;
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.Console;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
@@ -55,12 +58,12 @@ public class Distrit {
         ResquestPort = resquestPort;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args)  {
         Server servidor = new Server();
         Scanner scanner = new Scanner(System.in);
         System.out.println("[Distrito] Ingresar Puerto de Trabajo Distrito");
         servidor.setListenPort(scanner.nextInt());
-        scanner.close();
+        scanner.nextLine();
 
         try{
 
@@ -70,13 +73,7 @@ public class Distrit {
                 Socket cs = listenSocket.accept();
                 System.out.println("Nueva conexion entrante: ");
                 System.out.println("Puerto: " + servidor.getMultiCastPort());
-                Scanner scanner2 = new Scanner(System.in);
-                System.out.println("aaaaaaaaaaaaaa");
-                System.out.println(scanner2.nextLine());
-                Titan prueba = publicar_titan("prueba");
-                System.out.println("Nuevo titan publicado!");
-                System.out.println(prueba.getNombre_titan());
-
+                Titan nuevo_titan = publicar_titan("Trost");
                 Thread t = new Thread(new CONNECTION(cs));
                 t.start();
 
@@ -89,27 +86,29 @@ public class Distrit {
 
         }
     }
-
-    private static Titan publicar_titan(String nombre_distrito) {
+    private static Titan publicar_titan(String nombre_distrito) throws IOException {
+        System.out.println("Publicar Titán ");
         Titan titan = new Titan();
+        Scanner scanner = new Scanner(System.in);
         String consola_distrito = "[Distrito "+ nombre_distrito +"]";
-        System.out.println(consola_distrito+" Publicar Titán");
-        System.out.println(consola_distrito+" Introducir nombre");
-        Scanner scanner2 = new Scanner(System.in);
-        String nombre_titan = scanner2.next();
-        titan.setNombre_titan(nombre_titan);
+        System.out.println(consola_distrito+" Introducir nombre:");
+        String nombre = scanner.nextLine();
+        titan.setNombre_titan(nombre);
         System.out.println(consola_distrito+" Introducir tipo");
         System.out.println("1.- Normal");
         System.out.println("2.- Excentrico");
         System.out.println("3.- Cambiante");
-        titan.setTipo_titan(scanner2.nextInt());
+        Integer tipo = scanner.nextInt();
+        titan.setTipo_titan(tipo);
         System.out.println(consola_distrito+ " Se ha publicado el titan:"+ titan.getNombre_titan());
         System.out.println("***************");
         System.out.println("ID: "+titan.getID_titan());
         System.out.println("Nombre: "+titan.getNombre_titan());
         System.out.println("Tipo: " + titan.getTipo_titan());
-        System.out.print("***************");
-        return titan;
+        System.out.println("***************");
+        System.out.println("Nuevo titan publicado!");
         //Falta alertar el cliente!
+        return titan;
+
     }
 }
