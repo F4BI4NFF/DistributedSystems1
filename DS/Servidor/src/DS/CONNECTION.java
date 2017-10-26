@@ -1,11 +1,13 @@
 package DS;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Iterator;
 
 /**
  * Created by breathtaKing on 07-06-2016.
@@ -15,33 +17,60 @@ public class CONNECTION implements Runnable {
     private DataInputStream is = null;
     private DataOutputStream os = null;
 
-    public CONNECTION(Socket socket){
+    public JSONObject getDA() {
+        return DA;
+    }
+
+    public void setDA(JSONObject DA) {
+        this.DA = DA;
+    }
+
+    private JSONObject DA = new JSONObject();
+
+    public CONNECTION(Socket socket,JSONObject distritos){
         this.cs = socket;
+        this.DA = distritos;
     }
 
     @Override
     public void run(){
-        try {
+        try{
+            is = new DataInputStream(cs.getInputStream());
+            os = new DataOutputStream(cs.getOutputStream());
             try{
-                is = new DataInputStream(cs.getInputStream());
-                os = new DataOutputStream(cs.getOutputStream());
-                try{
-                    String comando = is.readUTF();
-                    System.out.println("Aqui en el servidor se ejecuta el comando : "+comando);
-                    processMsg(comando);
-                }catch (CommandUnavailableException e) {
-                    System.out.println(e);
-                    assert (false);
+                String comando = is.readUTF();
+                Console console = System.console();
+                for(String cmd =console.readLine("[Servidor Central]Dar autorizacion a/"+cs.getInetAddress() +" por Distrito "+comando+"\n1.-SI\n2.-NO\nx.- Salir\n"); !cmd.equals("x");cmd=console.readLine("**************************************************************\n[Servidor Central]Dar autorizacion a/"+cs.getInetAddress() +" por Distrito "+comando+"\n1.-SI\n2.-NO\nx.- Salir\n")){
+                    if(cmd.equals("1")){
+                        JSONObject mensaje = getDA();
+                        JSONArray conectiondata = (JSONArray) mensaje.get(comando);
+                        JSONObject respuesta = new JSONObject();
+                        respuesta.put("response","aceptado");
+                        respuesta.put("datos",conectiondata);
+                        os.writeUTF(respuesta.toJSONString());
+                        //Enviar info
+                        break;
+                    }
+                    else if(cmd.equals(("2"))){
+                        os.writeUTF("rechazado");
+                        cs.close();
+                    }
+                    else{
+                        System.out.println("[Servidor Central]Comando invalido");
+                    }
                 }
-
-            }catch (IOException e){
-                System.out.println("cacaa aqui");
+                os.close();
+                //System.out.println("Aqui en el servidor se ejecuta el comando : "+comando);
+                //processMsg(comando);
+            }catch (Exception e) {
                 System.out.println(e);
+                assert (false);
             }
-            String readString = is.readUTF();
-        } catch (IOException e) {
-            System.out.println("Cliente desconectado...");
+        }catch (IOException e){
+            System.out.println("cacaa aqui");
+            System.out.println(e);
         }
+        //String readString = is.readUTF();
 
 
     }

@@ -17,15 +17,15 @@ public class Server {
 
     private int ListenPort;
 
-    public JSONArray getDistritosActivos() {
+    public JSONObject getDistritosActivos() {
         return DistritosActivos;
     }
 
-    public void DistritosActivos(JSONArray distritosActivos) {
+    public void DistritosActivos(JSONObject distritosActivos) {
         DistritosActivos = distritosActivos;
     }
 
-    private JSONArray DistritosActivos = new JSONArray();
+    private JSONObject DistritosActivos = new JSONObject();
     private JSONArray ClientesActivos = new JSONArray();
 
     public String getMultiCastIP() {
@@ -76,23 +76,26 @@ public class Server {
                 String IPPeticiones = console.readLine("[Servidor Central] IP Peticiones: ");
                 int port = Integer.parseInt(console.readLine("[Servidor Central] Puerto Peticiones :"));
 
-                JSONArray ActiveD = servidor.getDistritosActivos();
-                JSONObject objD = initJSONDistrit(DistritName,servidor.getMultiCastIP(),IPPeticiones,servidor.getMultiCastPort(),port);
-                ActiveD.add(objD);
+                JSONObject ActiveD = servidor.getDistritosActivos();
+                JSONArray list = new JSONArray();
+                list.add(servidor.getMultiCastIP());
+                list.add(servidor.getMultiCastPort());
+                list.add(IPPeticiones);
+                list.add(port);
+                ActiveD.put(DistritName,list);
                 servidor.DistritosActivos(ActiveD);
 
             }
             else if (cmd.equals("2")){
                 try{
                     ServerSocket listenSocket = new ServerSocket(servidor.getListenPort());
-                    System.out.println("Server Central en espera...");
                     while (true) {
+                        System.out.println("[Servidor Central] En espera de peticiones...");
                         Socket cs = listenSocket.accept();
-                        console.readLine("Dar autorizacion a/"+listenSocket.getInetAddress() +" por Distrito"+);
                         System.out.println("Nueva conexion entrante: "+ listenSocket.getLocalSocketAddress());
                         System.out.println("Puerto: " + listenSocket.getLocalPort() );
 
-                        Thread t = new Thread(new CONNECTION(cs));
+                        Thread t = new Thread(new CONNECTION(cs,servidor.getDistritosActivos()));
                         t.start();
                     }
                 } catch (IOException e) {
@@ -106,11 +109,12 @@ public class Server {
 
     private static JSONObject initJSONDistrit(String name,String ipmulti,String ippeti,int portmulti,int portpeti){
         JSONObject obj = new JSONObject();
-        obj.put("Nombre",name);
-        obj.put("IPMulticast",ipmulti);
-        obj.put("PuertoMulticast",portmulti);
-        obj.put("IPPeticiones",ippeti);
-        obj.put("PuertoPeticiones",portpeti);
+        JSONArray list = new JSONArray();
+        list.add(ipmulti);
+        list.add(portmulti);
+        list.add(ippeti);
+        list.add(portpeti);
+        obj.put(name,list);
         return obj;
     }
 }

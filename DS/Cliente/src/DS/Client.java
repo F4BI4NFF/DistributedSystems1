@@ -1,14 +1,15 @@
 package DS;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.io.Console;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -57,8 +58,8 @@ public class Client {
         Console console = System.console();
         System.out.println("Iniciando cliente\n");
 
-        cliente.setCentralServerIP(console.readLine("[Cliente] Ingresar IP Servidor Central"));
-        cliente.setCentralServerPort(Integer.parseInt(console.readLine("[Cliente] Ingresar Puerto Servidor Central")));
+        cliente.setCentralServerIP(console.readLine("[Cliente] Ingresar IP Servidor Central : "));
+        cliente.setCentralServerPort(Integer.parseInt(console.readLine("[Cliente] Ingresar Puerto Servidor Central : ")));
 
         //Conexion a servidor
         try {
@@ -80,42 +81,77 @@ public class Client {
                 //******//
                 //Menu  //
                 //******//
-                for (String cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir");
+                for (String cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir\n");
                      !cmd.equals("x");
-                     cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir")) {
-                    if (cmd.equals("1")) {
+                     cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir\n")) {
+                    os.writeUTF(cmd);
+                    String fromserver = is.readUTF();
+                    JSONObject fromserverobj = processJSON(fromserver);
+                    if (fromserverobj.get("response").equals("aceptado")) {
                         //Conexion aceptada
+                        JSONArray msg = (JSONArray) fromserverobj.get("datos");
+                        Iterator<String> iterator = msg.iterator();
+                        List<String> list = new ArrayList<>();
+                        while (iterator.hasNext()){
+                            list.add(iterator.next());
+                        }
 
                         //Conexion a distrito
+                        Socket distritsocket = new Socket(list.get(2),Integer.parseInt(list.get(3)));
+                        DataInputStream Dis = null;
+                        DataOutputStream Dos = null;
+                        try {
+                            Dis = new DataInputStream(s.getInputStream());
+                            Dos = new DataOutputStream(s.getOutputStream());
+
+                        } catch (IOException e) {
+                            System.out.println("Conexion: " + e.getMessage());
+                        }
 
                         //mostrar consola
                         System.out.println("[Cliente] Consola");
+                        String initString;
                         for (cmd = console.readLine("[Cliente] (1) Listar Titanes\n[Cliente] (2) Cambiar Distrito\n[Cliente] (3) Capturar Titan\n[Cliente] (4) Asesinar Titan\n[Cliente] (5) Lista de Titanes Capturados\n[Cliente] (6) Lista de Titanes Asesinados\n[Cliente] (x) Desconectar\n");
                              !cmd.equals("x");
                              cmd = console.readLine("****************************************************\n[Cliente] (1) Listar Titanes\n[Cliente] (2) Cambiar Distrito\n[Cliente] (3) Capturar Titan\n[Cliente] (4) Asesinar Titan\n[Cliente] (5) Lista de Titanes Capturados\n[Cliente] (6) Lista de Titanes Asesinados\n[Cliente] (x) Desconectar\n")) {
                             if (cmd.equals("1")) {
-
-
+                                //Listar Titanes
+                                initString = initJSON(String.valueOf(cmd), param);
+                                os.writeUTF(initString);
                             }
                             else if (cmd.equals("2")){
                                 if(cliente.Conectado){
                                     System.out.println("Ya esta conectado a un distrito");
                                 }
                                 else{
+                                    //Cambiar de distrito
+                                    initString = initJSON(String.valueOf(cmd), param);
+                                    os.writeUTF(initString);
                                     System.out.println("");
                                 }
 
                             }
                             else if (cmd.equals("3")){
+                                // Capturar titan
+                                initString = initJSON(String.valueOf(cmd), param);
+                                os.writeUTF(initString);
 
                             }
                             else if (cmd.equals("4")){
+                                // Asesinar titan
+                                initString = initJSON(String.valueOf(cmd), param);
+                                os.writeUTF(initString);
 
                             }
                             else if (cmd.equals("5")){
-
+                                // Lista titanes caputados
+                                initString = initJSON(String.valueOf(cmd), param);
+                                os.writeUTF(initString);
                             }
                             else if (cmd.equals("6")){
+                                // Lista titanes asesinados
+                                initString = initJSON(String.valueOf(cmd), param);
+                                os.writeUTF(initString);
 
                             }
                             else{
@@ -131,14 +167,6 @@ public class Client {
                     }
 
                 }
-                comando = scanner.nextInt();
-                if(comando == 2 || comando == 3 || comando == 4){
-                    param = scanner.nextLine();
-                }
-                String initString = initJSON(String.valueOf(comando), param);
-
-
-                os.writeUTF(initString);
                 String fromserver = is.readUTF();
                 System.out.println ("Server: "+ fromserver);
                 is.close();
@@ -166,5 +194,21 @@ public class Client {
             obj.put("id",name);
         }
         return obj.toJSONString();
+    }
+    public static JSONObject processJSON(String mensaje){
+        JSONObject obj = null;
+        JSONParser parser = new JSONParser();
+        try {
+            obj = (JSONObject) parser.parse(mensaje);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+        //JSONArray msg = (JSONArray) obj.get("response");
+        //Iterator<String> iterator = msg.iterator();
+        //while (iterator.hasNext()) {
+        //    System.out.println(iterator.next());
+        //}
+        return obj;
     }
 }
