@@ -25,8 +25,8 @@ public class Server {
         DistritosActivos = distritosActivos;
     }
 
-    private JSONArray DistritosActivos;
-    private JSONArray ClientesActivos;
+    private JSONArray DistritosActivos = new JSONArray();
+    private JSONArray ClientesActivos = new JSONArray();
 
     public String getMultiCastIP() {
         return MultiCastIP;
@@ -65,15 +65,16 @@ public class Server {
                 console.readLine("[Servidor Central] Ingresar Puerto de Trabajo Servidor Central \n")
                 )
             );
-        for (String cmd = console.readLine("[Servidor Central] Ingrese accion a realizar\n[Servidor Central] 1.- Agregar Distrito\n[Servidor Central] x.- Para continuar\n");
+
+        for (String cmd = console.readLine("[Servidor Central] Ingrese accion a realizar\n[Servidor Central] 1.- Agregar Distrito\n[Servidor Central] 2.- Para Correr Server\n[Servidor Central] x.- Para Salir\n");
              !cmd.equals("x");
-             cmd = console.readLine("[Servidor Central] ")) {
+             cmd = console.readLine("****************************************************\n[Servidor Central] Ingrese accion a realizar\n[Servidor Central] 1.- Agregar Distrito\n[Servidor Central] 2.- Para Correr Server\n[Servidor Central] x.- Para Salir\n")) {
             if (cmd.equals("1")) {
                 String DistritName = console.readLine("[Servidor Central] Nombre Distrito: ");
                 servidor.setMultiCastIP(console.readLine("[Servidor Central] IP Multicast: "));
                 servidor.setMultiCastPort(Integer.parseInt(console.readLine("[Servidor Central] Puerto Multicast: ")));
-                String IPPeticiones = console.readLine("[Servidor Central] IP Peticiones");
-                int port = Integer.parseInt(console.readLine("[Servidor Central] Puerto Peticiones"));
+                String IPPeticiones = console.readLine("[Servidor Central] IP Peticiones: ");
+                int port = Integer.parseInt(console.readLine("[Servidor Central] Puerto Peticiones :"));
 
                 JSONArray ActiveD = servidor.getDistritosActivos();
                 JSONObject objD = initJSONDistrit(DistritName,servidor.getMultiCastIP(),IPPeticiones,servidor.getMultiCastPort(),port);
@@ -81,34 +82,25 @@ public class Server {
                 servidor.DistritosActivos(ActiveD);
 
             }
-        }
-        /*
-        Server servidor = new Server();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("[Servidor Central] Ingresar Puerto de Trabajo Servidor Central");
-        servidor.setListenPort(scanner.nextInt());
-        System.out.println("[Servidor Central] Nombre Distrito: ");
-        System.out.println("[Servidor Central] IP Multicast: ");
-        System.out.println("[Servidor Central] Puerto Multicast: ");
-        System.out.println("[Servidor Central] IP Peticiones: ");
-        System.out.println("[Servidor Central] Puerto Peticiones: ");
+            else if (cmd.equals("2")){
+                try{
+                    ServerSocket listenSocket = new ServerSocket(servidor.getListenPort());
+                    System.out.println("Server Central en espera...");
+                    while (true) {
+                        Socket cs = listenSocket.accept();
+                        console.readLine("Dar autorizacion a/"+listenSocket.getInetAddress() +" por Distrito"+)
+                        System.out.println("Nueva conexion entrante: "+ listenSocket.getLocalSocketAddress());
+                        System.out.println("Puerto: " + listenSocket.getLocalPort() );
 
-        scanner.close();
-*/
-        try{
-            ServerSocket listenSocket = new ServerSocket(servidor.getListenPort());
-            System.out.println("Server Central en espera...");
-            while (true) {
-                Socket cs = listenSocket.accept();
-                System.out.println("Nueva conexion entrante: "+ listenSocket.getLocalSocketAddress());
-                System.out.println("Puerto: " + listenSocket.getLocalPort() );
-
-                Thread t = new Thread(new CONNECTION(cs));
-                t.start();
+                        Thread t = new Thread(new CONNECTION(cs));
+                        t.start();
+                    }
+                } catch (IOException e) {
+                    // Por omisión de texto se detecta el modo distrito
+                    System.out.println(e.getMessage());
+                }
             }
-        } catch (IOException e) {
-            // Por omisión de texto se detecta el modo distrito
-            System.out.println(e.getMessage());
+
         }
     }
 

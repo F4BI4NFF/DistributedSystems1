@@ -2,6 +2,7 @@ package DS;
 
 import org.json.simple.JSONObject;
 
+import java.io.Console;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class Client {
     private String CentralServerIP;
     private int CentralServerPort;
     private String MultiCastListen;
+    private Boolean Conectado = false; // Conectado a un distrito
 
     public String getDistritName() {
         return DistritName;
@@ -52,17 +54,11 @@ public class Client {
 
     public static void main(String[] args) {
         Client cliente = new Client();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("[Cliente] Ingresar IP Servidor Central");
-        cliente.setCentralServerIP(scanner.nextLine());
-        System.out.println("[Cliente] Ingresar Puerto Servidor Central");
-        cliente.setCentralServerPort(scanner.nextInt());
-        scanner.nextLine();
-        System.out.println("[Cliente] Introducir Nombre de Distrito a Investigar. Ej: Trost, Shiganshina");
-        cliente.setDistritName(scanner.nextLine());
-        //System.out.println("Distrito"+ cliente.getDistritName());
-
+        Console console = System.console();
         System.out.println("Iniciando cliente\n");
+
+        cliente.setCentralServerIP(console.readLine("[Cliente] Ingresar IP Servidor Central"));
+        cliente.setCentralServerPort(Integer.parseInt(console.readLine("[Cliente] Ingresar Puerto Servidor Central")));
 
         //Conexion a servidor
         try {
@@ -79,20 +75,58 @@ public class Client {
                 } catch (IOException e) {
                     System.out.println("Conexion: " + e.getMessage());
                 }
-                System.out.println("Conexion aceptada.");
+                System.out.println("Conexion aceptada Servidor Central.");
 
                 //******//
                 //Menu  //
                 //******//
-                System.out.println("[Cliente] Consola");
-                System.out.println("[Cliente] (1) Listar Titanes");
-                System.out.println("[Cliente] (2) Cambiar Distrito");
-                System.out.println("[Cliente] (3) Capturar Titan");
-                System.out.println("[Cliente] (4) Asesinar Titan");
-                System.out.println("[Cliente] (5) Lista de Titanes Capturados");
-                System.out.println("[Cliente] (6) Lista de Titanes Asesinados");
-                System.out.println("[Cliente] (0) Desconectar");
-                //scanner.nextLine();
+                for (String cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir");
+                     !cmd.equals("x");
+                     cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir")) {
+                    if (cmd.equals("1")) {
+                        //Conexion aceptada
+                        System.out.println("[Cliente] Consola");
+                        for (cmd = console.readLine("[Cliente] (1) Listar Titanes\n[Cliente] (2) Cambiar Distrito\n[Cliente] (3) Capturar Titan\n[Cliente] (4) Asesinar Titan\n[Cliente] (5) Lista de Titanes Capturados\n[Cliente] (6) Lista de Titanes Asesinados\n[Cliente] (x) Desconectar\n");
+                             !cmd.equals("x");
+                             cmd = console.readLine("****************************************************\n[Cliente] (1) Listar Titanes\n[Cliente] (2) Cambiar Distrito\n[Cliente] (3) Capturar Titan\n[Cliente] (4) Asesinar Titan\n[Cliente] (5) Lista de Titanes Capturados\n[Cliente] (6) Lista de Titanes Asesinados\n[Cliente] (x) Desconectar\n")) {
+                            if (cmd.equals("1")) {
+
+
+                            }
+                            else if (cmd.equals("2")){
+                                if(cliente.Conectado){
+                                    System.out.println("Ya esta conectado a un distrito");
+                                }
+                                else{
+                                    System.out.println("");
+                                }
+
+                            }
+                            else if (cmd.equals("3")){
+
+                            }
+                            else if (cmd.equals("4")){
+
+                            }
+                            else if (cmd.equals("5")){
+
+                            }
+                            else if (cmd.equals("6")){
+
+                            }
+                            else{
+                                System.out.println("Comando no válido");
+                            }
+
+                        }
+
+
+                    }
+                    else{
+                        System.out.println("Conexión no autorizada para el Distrito de "+cliente.getDistritName());
+                    }
+
+                }
                 comando = scanner.nextInt();
                 if(comando == 2 || comando == 3 || comando == 4){
                     param = scanner.nextLine();
