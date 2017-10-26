@@ -17,6 +17,16 @@ public class Distrit {
     private String RequestIP;
     private int ResquestPort;
     List<String> lista_titanes;
+    private int ListenPort;
+
+    public int getListenPort() {
+        return ListenPort;
+    }
+
+    public void setListenPort(int listenPort) {
+        ListenPort = listenPort;
+    }
+
 
     public String getDistritName() {
         return DistritName;
@@ -59,20 +69,20 @@ public class Distrit {
     }
 
     public static void main(String[] args)  {
-        Server servidor = new Server();
+        Distrit distrito = new Distrit();
         Scanner scanner = new Scanner(System.in);
         System.out.println("[Distrito] Ingresar Puerto de Trabajo Distrito");
-        servidor.setListenPort(scanner.nextInt());
+        distrito.setListenPort(scanner.nextInt());
         scanner.nextLine();
 
         try{
 
-            ServerSocket listenSocket = new ServerSocket(servidor.getListenPort());
+            ServerSocket listenSocket = new ServerSocket(distrito.getListenPort());
             System.out.println("Distrito en espera...");
             while (true) {
                 Socket cs = listenSocket.accept();
                 System.out.println("Nueva conexion entrante: ");
-                System.out.println("Puerto: " + servidor.getMultiCastPort());
+                System.out.println("Puerto: " + distrito.getMultiCastPort());
                 Titan nuevo_titan = publicar_titan("Trost");
                 Thread t = new Thread(new CONNECTION(cs));
                 t.start();
@@ -107,7 +117,7 @@ public class Distrit {
         System.out.println("Tipo: " + titan.getTipo_titan());
         System.out.println("***************");
         System.out.println("Nuevo titan publicado!");
-        //Falta alertar el cliente!
+        //Falta alertar el cliente! con Multicast
         return titan;
 
     }
