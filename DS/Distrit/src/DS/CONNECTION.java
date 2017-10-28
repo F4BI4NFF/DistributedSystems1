@@ -12,11 +12,13 @@ import java.net.Socket;
  */
 public class CONNECTION implements Runnable {
     private Socket cs;
+    private Distrit distrito;
     private DataInputStream is = null;
     private DataOutputStream os = null;
 
-    public CONNECTION(Socket socket){
+    public CONNECTION(Socket socket, Distrit distrito){
         this.cs = socket;
+        this.distrito = distrito;
     }
 
     @Override
@@ -72,6 +74,7 @@ public class CONNECTION implements Runnable {
             //Listar titanes
             try{
                 this.ListarTitanes();
+
             } catch (Exception e){
                 System.out.println(e.getMessage());
             }
@@ -128,8 +131,9 @@ public class CONNECTION implements Runnable {
 
 
     public void ListarTitanes() throws Exception{
-        os.writeUTF("Hola soy Listar");
+        os.writeUTF("Titanes en "+distrito.getDistritName()+":\n" + distrito.getLista_titanes());
         System.out.println("Hola soy Listar");
+        System.out.println(distrito.getLista_titanes());
 
     }
     public void ListarCapturados() throws Exception{

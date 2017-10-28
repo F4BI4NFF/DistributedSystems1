@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,7 +20,15 @@ public class Distrit {
     private int MultiCastPort;
     private String RequestIP;
     private int ResquestPort;
-    List<String> lista_titanes;
+    List<String> lista_titanes = new ArrayList<String>();
+    public List<String> getLista_titanes() {
+        return lista_titanes;
+    }
+
+    public void setLista_titanes(List<String> lista_titanes) {
+        this.lista_titanes = lista_titanes;
+    }
+
     private int ListenPort;
 
     public JSONObject getDistritosActivos() {
@@ -117,14 +126,27 @@ public class Distrit {
 
                 ServerSocket listenSocket = new ServerSocket(distrito.getListenPort()); // Ip que entrega Cliente
                 System.out.println("Distrito en espera...");
+                System.out.println("Inicializar Distrito");
+                String nombre_distrito = console.readLine("Nombre de distrito:");
+                distrito.setDistritName(nombre_distrito);
+                List<String> titanes = distrito.getLista_titanes();
+                Titan titan1 = publicar_titan(distrito.getDistritName());
+                titanes.add(titan1.getNombre_titan());
+                System.out.println(distrito.lista_titanes);
+                Titan titan2 = publicar_titan(distrito.getDistritName());
+                titanes.add(titan2.getNombre_titan());
+                distrito.setLista_titanes(titanes);
+                System.out.println("Ahora viene la lista de nombres!");
+                System.out.println(distrito.getLista_titanes());
+
+                System.out.println("Se acabó la creacion de titanes!");
                 while (true) {
                     Socket cs = listenSocket.accept();
                     System.out.println("Nueva conexion entrante: ");
                     System.out.println("Puerto: " + distrito.getMultiCastPort());
-                    //Titan nuevo_titan = publicar_titan("Trost");
-                    Thread t = new Thread(new CONNECTION(cs));
+                    Thread t = new Thread(new CONNECTION(cs,distrito));
+                    //System.out.println("Opciones... \n Publicar un titan:");
                     t.start();
-
                     //Publicar un titan --
                 }
             } catch (IOException e) {

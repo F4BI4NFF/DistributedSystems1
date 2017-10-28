@@ -126,6 +126,7 @@ public class Client {
                                 fromserver = Dis.readUTF();
                                 System.out.println(fromserver);
                                 System.out.println("----------------------------------");
+
                             } else if (cmd.equals("2")) {
                                 if (!cliente.Conectado) {
                                     System.out.println("Usted no esta conectado a ningun distrito");
