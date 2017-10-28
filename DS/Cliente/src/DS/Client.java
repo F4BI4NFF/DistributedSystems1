@@ -24,7 +24,7 @@ public class Client {
         return DistritName;
     }
 
-    public  void setDistritName(String distritName) {
+    public void setDistritName(String distritName) {
         this.DistritName = distritName;
     }
 
@@ -32,7 +32,7 @@ public class Client {
         return CentralServerIP;
     }
 
-    public  void setCentralServerIP(String centralServerIP) {
+    public void setCentralServerIP(String centralServerIP) {
         this.CentralServerIP = centralServerIP;
     }
 
@@ -40,7 +40,7 @@ public class Client {
         return CentralServerPort;
     }
 
-    public  void setCentralServerPort(int centralServerPort) {
+    public void setCentralServerPort(int centralServerPort) {
         this.CentralServerPort = centralServerPort;
     }
 
@@ -63,9 +63,9 @@ public class Client {
 
         //Conexion a servidor
         try {
-            Socket s = new Socket( cliente.getCentralServerIP(),cliente.getCentralServerPort());
+            Socket s = new Socket(cliente.getCentralServerIP(), cliente.getCentralServerPort());
             int comando = 10;
-            while(comando != 0){
+            while (comando != 0) {
                 String param = null;
                 DataInputStream is = null;
                 DataOutputStream os = null;
@@ -89,18 +89,17 @@ public class Client {
                     JSONObject fromserverobj = processJSON(fromserver);
                     if (fromserverobj.get("response").equals("aceptado")) {
                         //Conexion aceptada
-                        System.out.println("jue jue");
                         JSONArray msg = (JSONArray) fromserverobj.get("datos");
                         Iterator<String> iterator = msg.iterator();
                         List<String> list = new ArrayList<>();
-                        while (iterator.hasNext()){
+                        while (iterator.hasNext()) {
                             list.add(iterator.next());
                         }
 
                         //Conexion a distrito
 
                         int puerto_peticion = Integer.parseInt(String.valueOf(list.get(3)));
-                        Socket distritsocket = new Socket(list.get(2),puerto_peticion);
+                        Socket distritsocket = new Socket(list.get(2), puerto_peticion);
 
                         DataInputStream Dis = null;
                         DataOutputStream Dos = null;
@@ -123,57 +122,49 @@ public class Client {
                                 //Listar Titanes
                                 initString = initJSON(String.valueOf(cmd), "caca");
                                 os.writeUTF(initString);
-                            }
-                            else if (cmd.equals("2")){
-                                if(cliente.Conectado){
+                            } else if (cmd.equals("2")) {
+                                if (cliente.Conectado) {
                                     System.out.println("Ya esta conectado a un distrito");
-                                }
-                                else{
+                                } else {
                                     //Cambiar de distrito
                                     initString = initJSON(String.valueOf(cmd), param);
                                     os.writeUTF(initString);
                                     System.out.println("");
                                 }
 
-                            }
-                            else if (cmd.equals("3")){
+                            } else if (cmd.equals("3")) {
                                 // Capturar titan
                                 initString = initJSON(String.valueOf(cmd), param);
                                 os.writeUTF(initString);
 
-                            }
-                            else if (cmd.equals("4")){
+                            } else if (cmd.equals("4")) {
                                 // Asesinar titan
                                 initString = initJSON(String.valueOf(cmd), param);
                                 os.writeUTF(initString);
 
-                            }
-                            else if (cmd.equals("5")){
+                            } else if (cmd.equals("5")) {
                                 // Lista titanes caputados
                                 initString = initJSON(String.valueOf(cmd), param);
                                 os.writeUTF(initString);
-                            }
-                            else if (cmd.equals("6")){
+                            } else if (cmd.equals("6")) {
                                 // Lista titanes asesinados
                                 initString = initJSON(String.valueOf(cmd), param);
                                 os.writeUTF(initString);
 
-                            }
-                            else{
+                            } else {
                                 System.out.println("Comando no válido");
                             }
 
                         }
 
 
-                    }
-                    else{
-                        System.out.println("Conexión no autorizada para el Distrito de "+cliente.getDistritName());
+                    } else {
+                        System.out.println("Conexión no autorizada para el Distrito de " + cliente.getDistritName());
                     }
 
                 }
                 String fromserver = is.readUTF();
-                System.out.println ("Server: "+ fromserver);
+                System.out.println("Server: " + fromserver);
                 is.close();
                 os.close();
             }
@@ -186,7 +177,7 @@ public class Client {
     }
 
 
-    private static String initJSON(String mode,String name = "prueba"){
+    private static String initJSON(String mode,String name){
         JSONObject obj = new JSONObject();
         obj.put("comando",mode);
         if(obj.get("comando").equals("2")){

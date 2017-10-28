@@ -10,8 +10,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Cliente/out/artifacts/Cliente_jar/Cliente.jar" afterPath="$PROJECT_DIR$/../Cliente/out/artifacts/Cliente_jar/Cliente.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Cliente/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../Cliente/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Cliente/src/DS/Client.java" afterPath="$PROJECT_DIR$/../Cliente/src/DS/Client.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DS/Distrit.java" afterPath="$PROJECT_DIR$/src/DS/Distrit.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../Servidor/.idea/workspace.xml" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -27,8 +25,8 @@
       <file leaf-file-name="Distrit.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/DS/Distrit.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="814">
-              <caret line="147" column="20" lean-forward="false" selection-start-line="147" selection-start-column="20" selection-end-line="147" selection-end-column="20" />
+            <state relative-caret-position="-510">
+              <caret line="28" column="47" lean-forward="true" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
               <folding>
                 <element signature="e#1353#1354#0" expanded="true" />
                 <element signature="e#1389#1390#0" expanded="true" />
@@ -93,10 +91,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1358" />
+    <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1382" />
-    <option name="height" value="784" />
+    <option name="height" value="744" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -272,15 +270,15 @@
       <workItem from="1508993548971" duration="7000" />
       <workItem from="1508993620345" duration="70000" />
       <workItem from="1509036479019" duration="1454000" />
-      <workItem from="1509133884717" duration="10456000" />
+      <workItem from="1509133884717" duration="12047000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11987000" />
+    <option name="totallyTimeSpent" value="13578000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1358" y="-8" width="1382" height="784" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -399,8 +397,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DS/Distrit.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="814">
-          <caret line="147" column="20" lean-forward="false" selection-start-line="147" selection-start-column="20" selection-end-line="147" selection-end-column="20" />
+        <state relative-caret-position="-510">
+          <caret line="28" column="47" lean-forward="true" selection-start-line="28" selection-start-column="47" selection-end-line="28" selection-end-column="47" />
           <folding>
             <element signature="e#1353#1354#0" expanded="true" />
             <element signature="e#1389#1390#0" expanded="true" />
