@@ -89,7 +89,7 @@ public class Distrit {
         System.out.println("[Distrito] Ingresar Puerto de Trabajo Distrito");
         distrito.setListenPort(scanner.nextInt());
         scanner.nextLine();
-
+        /*
         for (String cmd = console.readLine("[Distrito] Ingrese accion a realizar\n[Distrito] 1.- Inicializar Distrito\n x.- Para Salir\n");
              !cmd.equals("x");
              cmd = console.readLine("****************************************************\n[Distrito] Ingrese accion a realizar\n[Distrito] 1.- Inicializar Distrito\n x.- Para Salir\n")) {
@@ -110,6 +110,7 @@ public class Distrit {
                 ActiveD.put(DistritName, list);
                 distrito.setDistritosActivos(ActiveD);
             }
+            */
 
 
             try {
@@ -133,7 +134,8 @@ public class Distrit {
 
             }
         }
-    }
+
+
 
     private static Titan publicar_titan(String nombre_distrito) throws IOException {
         System.out.println("Publicar Titán ");

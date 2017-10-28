@@ -89,6 +89,7 @@ public class Client {
                     JSONObject fromserverobj = processJSON(fromserver);
                     if (fromserverobj.get("response").equals("aceptado")) {
                         //Conexion aceptada
+                        System.out.println("jue jue");
                         JSONArray msg = (JSONArray) fromserverobj.get("datos");
                         Iterator<String> iterator = msg.iterator();
                         List<String> list = new ArrayList<>();
@@ -97,9 +98,13 @@ public class Client {
                         }
 
                         //Conexion a distrito
-                        Socket distritsocket = new Socket(list.get(2),Integer.parseInt(list.get(3)));
+
+                        int puerto_peticion = Integer.parseInt(String.valueOf(list.get(3)));
+                        Socket distritsocket = new Socket(list.get(2),puerto_peticion);
+
                         DataInputStream Dis = null;
                         DataOutputStream Dos = null;
+                        cliente.Conectado = true;
                         try {
                             Dis = new DataInputStream(s.getInputStream());
                             Dos = new DataOutputStream(s.getOutputStream());
@@ -116,7 +121,7 @@ public class Client {
                              cmd = console.readLine("****************************************************\n[Cliente] (1) Listar Titanes\n[Cliente] (2) Cambiar Distrito\n[Cliente] (3) Capturar Titan\n[Cliente] (4) Asesinar Titan\n[Cliente] (5) Lista de Titanes Capturados\n[Cliente] (6) Lista de Titanes Asesinados\n[Cliente] (x) Desconectar\n")) {
                             if (cmd.equals("1")) {
                                 //Listar Titanes
-                                initString = initJSON(String.valueOf(cmd), param);
+                                initString = initJSON(String.valueOf(cmd), "caca");
                                 os.writeUTF(initString);
                             }
                             else if (cmd.equals("2")){
@@ -181,7 +186,7 @@ public class Client {
     }
 
 
-    private static String initJSON(String mode,String name){
+    private static String initJSON(String mode,String name = "prueba"){
         JSONObject obj = new JSONObject();
         obj.put("comando",mode);
         if(obj.get("comando").equals("2")){
