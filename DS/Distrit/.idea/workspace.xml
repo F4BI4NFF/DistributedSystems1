@@ -8,13 +8,11 @@
   <component name="ChangeListManager">
     <list default="true" id="9e6ce31e-ac10-4027-bf10-cab2c956fa5b" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Cliente/out/artifacts/Cliente_jar/Cliente.jar" afterPath="$PROJECT_DIR$/../Cliente/out/artifacts/Cliente_jar/Cliente.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/artifacts/Distrit_jar/Distrit.jar" afterPath="$PROJECT_DIR$/out/artifacts/Distrit_jar/Distrit.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/out/artifacts/Servidor_jar/Servidor.jar" afterPath="$PROJECT_DIR$/../Servidor/out/artifacts/Servidor_jar/Servidor.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/out/production/Servidor/DS/CONNECTION.class" afterPath="$PROJECT_DIR$/../Servidor/out/production/Servidor/DS/CONNECTION.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Cliente/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../Cliente/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Cliente/src/DS/Client.java" afterPath="$PROJECT_DIR$/../Cliente/src/DS/Client.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DS/Distrit.java" afterPath="$PROJECT_DIR$/src/DS/Distrit.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DS/CONNECTION.java" afterPath="$PROJECT_DIR$/src/DS/CONNECTION.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../Servidor/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/src/DS/CONNECTION.java" afterPath="$PROJECT_DIR$/../Servidor/src/DS/CONNECTION.java" />
     </list>
@@ -28,7 +26,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Distrit.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Distrit.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/DS/Distrit.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="559">
@@ -38,11 +36,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CONNECTION.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="CONNECTION.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/DS/CONNECTION.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="12" column="45" lean-forward="true" selection-start-line="12" selection-start-column="45" selection-end-line="12" selection-end-column="45" />
+            <state relative-caret-position="321">
+              <caret line="57" column="60" lean-forward="false" selection-start-line="57" selection-start-column="60" selection-end-line="57" selection-end-column="60" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -84,6 +82,7 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/DS/Distrit.java" />
+        <option value="$PROJECT_DIR$/src/DS/CONNECTION.java" />
       </list>
     </option>
   </component>
@@ -274,16 +273,15 @@
       <workItem from="1508993620345" duration="70000" />
       <workItem from="1509036479019" duration="1454000" />
       <workItem from="1509133884717" duration="12047000" />
-      <workItem from="1509164498114" duration="1412000" />
+      <workItem from="1509164498114" duration="3875000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14990000" />
+    <option name="totallyTimeSpent" value="17453000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -417,21 +415,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/DS/CONNECTION.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="12" column="45" lean-forward="true" selection-start-line="12" selection-start-column="45" selection-end-line="12" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/DS/Distrit.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="559">
           <caret line="134" column="13" lean-forward="true" selection-start-line="134" selection-start-column="13" selection-end-line="134" selection-end-column="13" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DS/CONNECTION.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="321">
+          <caret line="57" column="60" lean-forward="false" selection-start-line="57" selection-start-column="60" selection-end-line="57" selection-end-column="60" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

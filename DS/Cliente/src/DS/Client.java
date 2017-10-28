@@ -85,7 +85,7 @@ public class Client {
                      !cmd.equals("x");
                      cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir\n")) {
                     cliente.setDistritName(cmd);
-                    os.writeUTF(cmd);
+                    os.writeUTF(initJSONfirst(cmd));
                     String fromserver = is.readUTF();
                     JSONObject fromserverobj = processJSON(fromserver);
                     if (fromserverobj.get("response").equals("aceptado")) {
@@ -106,8 +106,8 @@ public class Client {
                         DataOutputStream Dos = null;
                         cliente.Conectado = true;
                         try {
-                            Dis = new DataInputStream(s.getInputStream());
-                            Dos = new DataOutputStream(s.getOutputStream());
+                            Dis = new DataInputStream(distritsocket.getInputStream());
+                            Dos = new DataOutputStream(distritsocket.getOutputStream());
 
                         } catch (IOException e) {
                             System.out.println("Conexion: " + e.getMessage());
@@ -123,6 +123,9 @@ public class Client {
                                 //Listar Titanes
                                 initString = initJSON(String.valueOf(cmd), "caca");
                                 Dos.writeUTF(initString);
+                                fromserver = Dis.readUTF();
+                                System.out.println(fromserver);
+                                System.out.println("----------------------------------");
                             } else if (cmd.equals("2")) {
                                 if (!cliente.Conectado) {
                                     System.out.println("Usted no esta conectado a ningun distrito");
@@ -150,6 +153,7 @@ public class Client {
                                         //Conexion a distrito
 
                                         puerto_peticion = Integer.parseInt(String.valueOf(list.get(3)));
+                                        distritsocket.close();
                                         distritsocket = new Socket(list.get(2), puerto_peticion);
 
                                         Dis = null;
@@ -218,6 +222,12 @@ public class Client {
         } catch (IOException e2) {
             System.out.println("Linea: " + e2.getMessage());
         }
+    }
+    private static String initJSONfirst(String mode){
+        JSONObject obj = new JSONObject();
+        obj.put("nombre",mode);
+        obj.put("tipo","Cliente");
+        return obj.toJSONString();
     }
 
 

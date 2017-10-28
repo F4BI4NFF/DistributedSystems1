@@ -45,6 +45,20 @@ public class CONNECTION implements Runnable {
 
 
     }
+    private static String initJSONfirst(String mode){
+        JSONObject obj = new JSONObject();
+        obj.put("nombre",mode);
+        obj.put("tipo","Distrito");
+        return obj.toJSONString();
+    }
+    private static String initJSON(String mode,String name){
+        //Para codificar el comando que se envia al servidor
+        JSONObject obj = new JSONObject();
+        obj.put("comando",mode);
+        // name comodin por si se necesita modificar a gusto
+        obj.put("name",name);
+        return obj.toJSONString();
+    }
     public void processMsg(String jsonString) throws CommandUnavailableException{
         JSONObject obj = null;
         JSONParser parser = new JSONParser();

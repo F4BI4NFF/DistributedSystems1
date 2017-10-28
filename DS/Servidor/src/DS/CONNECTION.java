@@ -39,32 +39,44 @@ public class CONNECTION implements Runnable {
             os = new DataOutputStream(cs.getOutputStream());
             try{
                 String comando = is.readUTF();
+                JSONObject fromclient = processJSON(comando);
                 Console console = System.console();
-                for(String cmd =console.readLine("[Servidor Central]Dar autorizacion a "+cs.getInetAddress() +" por Distrito "+comando+"\n1.-SI\n2.-NO\nx.- Salir\n"); !cmd.equals("x");cmd=console.readLine("**************************************************************\n[Servidor Central]Dar autorizacion a/"+cs.getInetAddress() +" por Distrito "+comando+"\n1.-SI\n2.-NO\nx.- Salir\n")){
-                    if(cmd.equals("1")){
-                        JSONObject mensaje = getDA();
-                        JSONArray conectiondata = (JSONArray) mensaje.get(comando);
-                        JSONObject respuesta = new JSONObject();
-                        respuesta.put("response","aceptado");
-                        respuesta.put("datos",conectiondata);
-                        os.writeUTF(respuesta.toJSONString());
-                        //Enviar info
+                if (fromclient.get("tipo").equals("Cliente")){
+                    for(String cmd =console.readLine("[Servidor Central]Dar autorizacion a "+cs.getInetAddress() +" por Distrito "+comando+"\n1.-SI\n2.-NO\nx.- Salir\n"); !cmd.equals("x");cmd=console.readLine("**************************************************************\n[Servidor Central]Dar autorizacion a/"+cs.getInetAddress() +" por Distrito "+comando+"\n1.-SI\n2.-NO\nx.- Salir\n")){
+
+                        if(cmd.equals("1")){
+                            JSONObject mensaje = getDA();
+                            JSONArray conectiondata = (JSONArray) mensaje.get(comando);
+                            JSONObject respuesta = new JSONObject();
+                            respuesta.put("response","aceptado");
+                            respuesta.put("datos",conectiondata);
+                            os.writeUTF(respuesta.toJSONString());
+                            //Enviar info
+
+                        }
+                        else if(cmd.equals(("2"))){
+                            os.writeUTF("rechazado");
+                        }
+                        else{
+                            System.out.println("[Servidor Central]Comando invalido\n");
+                        }
+                        comando = is.readUTF();
 
                     }
-                    else if(cmd.equals(("2"))){
-                        os.writeUTF("rechazado");
-                    }
-                    else{
-                        System.out.println("[Servidor Central]Comando invalido");
-                    }
+                    System.out.println("[Servidor Central] En espera de peticiones...");
+                    os.close();
+                    is.close();
+                    this.cs.close();
+                }else if (fromclient.get("tipo").equals("Distrito")){
+                    // Logica recepcion de lista (Capturados/Asesinados Globales)
+
+
+                    // Logica envio de peticion de lista (Capturados/Asesinados Globales)
+
+                    // OJO que tambien sirve el paso de comandos por json
 
                 }
-                System.out.println("[Servidor Central] En espera de peticiones...");
-                os.close();
-                is.close();
-                this.cs.close();
-                //System.out.println("Aqui en el servidor se ejecuta el comando : "+comando);
-                //processMsg(comando);
+
             }catch (Exception e) {
                 System.out.println(e);
                 assert (false);
@@ -143,6 +155,18 @@ public class CONNECTION implements Runnable {
             catch (IOException e){System.out.println("Error al formar desconexion.");}
         }
     }
+    public static JSONObject processJSON(String mensaje){
+        JSONObject obj = null;
+        JSONParser parser = new JSONParser();
+        try {
+            obj = (JSONObject) parser.parse(mensaje);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+        return obj;
+    }
+
 
 
     public void ListarTitanes() throws Exception{
