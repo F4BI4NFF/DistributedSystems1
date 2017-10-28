@@ -121,7 +121,7 @@ public class Distrit {
                     Socket cs = listenSocket.accept();
                     System.out.println("Nueva conexion entrante: ");
                     System.out.println("Puerto: " + distrito.getMultiCastPort());
-                    Titan nuevo_titan = publicar_titan("Trost");
+                    //Titan nuevo_titan = publicar_titan("Trost");
                     Thread t = new Thread(new CONNECTION(cs));
                     t.start();
 

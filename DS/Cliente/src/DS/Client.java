@@ -84,6 +84,7 @@ public class Client {
                 for (String cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir\n");
                      !cmd.equals("x");
                      cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir\n")) {
+                    cliente.setDistritName(cmd);
                     os.writeUTF(cmd);
                     String fromserver = is.readUTF();
                     JSONObject fromserverobj = processJSON(fromserver);
@@ -121,16 +122,56 @@ public class Client {
                             if (cmd.equals("1")) {
                                 //Listar Titanes
                                 initString = initJSON(String.valueOf(cmd), "caca");
-                                os.writeUTF(initString);
+                                Dos.writeUTF(initString);
                             } else if (cmd.equals("2")) {
-                                if (cliente.Conectado) {
-                                    System.out.println("Ya esta conectado a un distrito");
+                                if (!cliente.Conectado) {
+                                    System.out.println("Usted no esta conectado a ningun distrito");
                                 } else {
                                     //Cambiar de distrito
-                                    initString = initJSON(String.valueOf(cmd), param);
-                                    os.writeUTF(initString);
-                                    System.out.println("");
+                                    param = console.readLine("Ingrese distrito a investigar :");
+                                    //initString = initJSON(String.valueOf(cmd), param);
+                                    try {
+                                        os.writeUTF(param);
+                                    }catch (IOException e){
+                                        e.getMessage();
+                                    }
+                                    fromserver = is.readUTF();
+                                    fromserverobj = processJSON(fromserver);
+                                    if (fromserverobj.get("response").equals("aceptado")) {
+                                        //Conexion aceptada
+                                        cliente.setDistritName(param);
+                                        msg = (JSONArray) fromserverobj.get("datos");
+                                        iterator = msg.iterator();
+                                        list = new ArrayList<>();
+                                        while (iterator.hasNext()) {
+                                            list.add(iterator.next());
+                                        }
+
+                                        //Conexion a distrito
+
+                                        puerto_peticion = Integer.parseInt(String.valueOf(list.get(3)));
+                                        distritsocket = new Socket(list.get(2), puerto_peticion);
+
+                                        Dis = null;
+                                        Dos = null;
+                                        cliente.Conectado = true;
+                                        try {
+                                            Dis = new DataInputStream(s.getInputStream());
+                                            Dos = new DataOutputStream(s.getOutputStream());
+
+                                        } catch (IOException e) {
+                                            System.out.println("Conexion: " + e.getMessage());
+                                        }
+
+
+                                        //System.out.println("");
+                                    }
+                                    else{
+                                        System.out.println("Conexión no autorizada para el Distrito de " + cliente.getDistritName());
+                                        System.out.println("Usted sigue en el distrito de "+cliente.getDistritName());
+                                    }
                                 }
+
 
                             } else if (cmd.equals("3")) {
                                 // Capturar titan
@@ -163,11 +204,14 @@ public class Client {
                     }
 
                 }
-                String fromserver = is.readUTF();
-                System.out.println("Server: " + fromserver);
+                //String fromserver = is.readUTF();
+                //System.out.println("Server: " + fromserver);
                 is.close();
                 os.close();
+                comando = 0;
+
             }
+            s.close();
 
         } catch (UnknownHostException e1) {
             System.out.println("Socket: " + e1.getMessage());

@@ -40,7 +40,7 @@ public class CONNECTION implements Runnable {
             try{
                 String comando = is.readUTF();
                 Console console = System.console();
-                for(String cmd =console.readLine("[Servidor Central]Dar autorizacion a/"+cs.getInetAddress() +" por Distrito "+comando+"\n1.-SI\n2.-NO\nx.- Salir\n"); !cmd.equals("x");cmd=console.readLine("**************************************************************\n[Servidor Central]Dar autorizacion a/"+cs.getInetAddress() +" por Distrito "+comando+"\n1.-SI\n2.-NO\nx.- Salir\n")){
+                for(String cmd =console.readLine("[Servidor Central]Dar autorizacion a "+cs.getInetAddress() +" por Distrito "+comando+"\n1.-SI\n2.-NO\nx.- Salir\n"); !cmd.equals("x");cmd=console.readLine("**************************************************************\n[Servidor Central]Dar autorizacion a/"+cs.getInetAddress() +" por Distrito "+comando+"\n1.-SI\n2.-NO\nx.- Salir\n")){
                     if(cmd.equals("1")){
                         JSONObject mensaje = getDA();
                         JSONArray conectiondata = (JSONArray) mensaje.get(comando);
@@ -49,17 +49,20 @@ public class CONNECTION implements Runnable {
                         respuesta.put("datos",conectiondata);
                         os.writeUTF(respuesta.toJSONString());
                         //Enviar info
-                        break;
+
                     }
                     else if(cmd.equals(("2"))){
                         os.writeUTF("rechazado");
-                        cs.close();
                     }
                     else{
                         System.out.println("[Servidor Central]Comando invalido");
                     }
+
                 }
+                System.out.println("[Servidor Central] En espera de peticiones...");
                 os.close();
+                is.close();
+                this.cs.close();
                 //System.out.println("Aqui en el servidor se ejecuta el comando : "+comando);
                 //processMsg(comando);
             }catch (Exception e) {
