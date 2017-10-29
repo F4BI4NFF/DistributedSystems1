@@ -94,70 +94,36 @@ public class Distrit {
     public static void main(String[] args) {
         Console console = System.console();
         Distrit distrito = new Distrit();
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("[Distrito] Ingresar Puerto de Trabajo Distrito");
-        distrito.setListenPort(scanner.nextInt());
-        scanner.nextLine();
-        /*
-        for (String cmd = console.readLine("[Distrito] Ingrese accion a realizar\n[Distrito] 1.- Inicializar Distrito\n x.- Para Salir\n");
-             !cmd.equals("x");
-             cmd = console.readLine("****************************************************\n[Distrito] Ingrese accion a realizar\n[Distrito] 1.- Inicializar Distrito\n x.- Para Salir\n")) {
-            if (cmd.equals("1")) {
-                String DistritName = console.readLine("[Distrito] Nombre Servidor: ");
-                String inicio = "[Distrito " + DistritName + "]";
-                distrito.setMultiCastIp(console.readLine(inicio + " IP Multicast: "));
-                distrito.setMultiCastPort(Integer.parseInt(console.readLine(inicio + " Puerto Multicast: ")));
-                String IPPeticiones = console.readLine(inicio + " IP Peticiones: ");
-                int port = Integer.parseInt(console.readLine(inicio + " Puerto Peticiones :"));
+        distrito.setDistritName(console.readLine("[Distrito] Identifique con nombre al distrito : "));
+        distrito.setListenPort(Integer.parseInt(console.readLine("[Distrito] Ingresar Puerto de Peticiones para distrito de "+distrito.getDistritName()+" : ")));
+        try {
+            ServerSocket listenSocket = new ServerSocket(distrito.getListenPort()); // Ip que entrega Cliente
+            System.out.println("Distrito en espera...");
+            List<String> titanes = distrito.getLista_titanes();
+            Titan titan1 = publicar_titan(distrito.getDistritName());
+            titanes.add(titan1.getNombre_titan());
+            System.out.println(distrito.lista_titanes);
+            Titan titan2 = publicar_titan(distrito.getDistritName());
+            titanes.add(titan2.getNombre_titan());
+            distrito.setLista_titanes(titanes);
+            System.out.println("Ahora viene la lista de nombres!");
+            System.out.println(distrito.getLista_titanes());
 
-                JSONObject ActiveD = distrito.getDistritosActivos();
-                JSONArray list = new JSONArray();
-                list.add(distrito.getMultiCastIp());
-                list.add(distrito.getMultiCastPort());
-                list.add(IPPeticiones);
-                list.add(port);
-                ActiveD.put(DistritName, list);
-                distrito.setDistritosActivos(ActiveD);
+            System.out.println("Se acabó la creacion de titanes!");
+            while (true) {
+                Socket cs = listenSocket.accept();
+                System.out.println("Nueva conexion entrante: ");
+                System.out.println("Puerto: " + distrito.getMultiCastPort());
+                Thread t = new Thread(new CONNECTION(cs,distrito));
+                //System.out.println("Opciones... \n Publicar un titan:");
+                t.start();
+                //Publicar un titan --
             }
-            */
-
-
-            try {
-
-                ServerSocket listenSocket = new ServerSocket(distrito.getListenPort()); // Ip que entrega Cliente
-                System.out.println("Distrito en espera...");
-                System.out.println("Inicializar Distrito");
-                String nombre_distrito = console.readLine("Nombre de distrito:");
-                distrito.setDistritName(nombre_distrito);
-                List<String> titanes = distrito.getLista_titanes();
-                Titan titan1 = publicar_titan(distrito.getDistritName());
-                titanes.add(titan1.getNombre_titan());
-                System.out.println(distrito.lista_titanes);
-                Titan titan2 = publicar_titan(distrito.getDistritName());
-                titanes.add(titan2.getNombre_titan());
-                distrito.setLista_titanes(titanes);
-                System.out.println("Ahora viene la lista de nombres!");
-                System.out.println(distrito.getLista_titanes());
-
-                System.out.println("Se acabó la creacion de titanes!");
-                while (true) {
-                    Socket cs = listenSocket.accept();
-                    System.out.println("Nueva conexion entrante: ");
-                    System.out.println("Puerto: " + distrito.getMultiCastPort());
-                    Thread t = new Thread(new CONNECTION(cs,distrito));
-                    //System.out.println("Opciones... \n Publicar un titan:");
-                    t.start();
-                    //Publicar un titan --
-                }
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-
-                //Logica servidor de distrito
-
-            }
+        } catch (IOException e) {
+            //no se pudo abrir socket
+            System.out.println(e.getMessage());
         }
-
-
+    }
 
     private static Titan publicar_titan(String nombre_distrito) throws IOException {
         System.out.println("Publicar Titán ");

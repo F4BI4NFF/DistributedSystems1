@@ -68,10 +68,17 @@ public class CONNECTION implements Runnable {
                     is.close();
                     this.cs.close();
                 }else if (fromclient.get("tipo").equals("Distrito")){
-                    // Logica recepcion de lista (Capturados/Asesinados Globales)
+                    if (fromclient.get("comando").equals("1")){
+                        // Logica recepcion de lista (Capturados/Asesinados Globales)
+                        this.ListarCapturados();
+                    }else if (fromclient.get("comando").equals("2")){
+                        // Logica envio de peticion de lista (Capturados/Asesinados Globales)
+                        this.ListarAsesinados();
+                    }else {
+                        System.out.println("Comando invalido recivido de Distrito");
+                    }
 
 
-                    // Logica envio de peticion de lista (Capturados/Asesinados Globales)
 
                     // OJO que tambien sirve el paso de comandos por json
 
@@ -89,72 +96,6 @@ public class CONNECTION implements Runnable {
 
 
     }
-    public void processMsg(String jsonString) throws CommandUnavailableException{
-        JSONObject obj = null;
-        JSONParser parser = new JSONParser();
-        try {
-            obj = (JSONObject) parser.parse(jsonString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        if(obj.get("comando").equals("1")){
-            //Listar titanes
-            try{
-                this.ListarTitanes();
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-        }
-        else if (obj.get("comando").equals("2")){
-            //Cambiar distrito
-            String name = obj.get("distrit").toString();
-            try{
-                this.ChangeDistrit(name);
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-        }
-        else if (obj.get("comando").equals("3")){
-            //Capturar titan
-            Integer id = Integer.parseInt(obj.get("id").toString());
-            try{
-                this.Capturar(id);
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-        }
-        else if (obj.get("comando").equals("4")){
-            //Asesinar titan
-            Integer id = Integer.parseInt(obj.get("id").toString());
-            try{
-                this.Asesinar(id);
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-        }
-        else if (obj.get("comando").equals("5")){
-            //Listar titanes capturados
-            try{
-                this.ListarCapturados();
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-        }
-        else if (obj.get("comando").equals("6")){
-            //Listar titanes asesinados
-            try{
-                this.ListarAsesinados();
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-        }
-        else{
-            System.out.println("Comando no reconocido, prueba nuevamente.");
-            try{cs.close();}
-            catch (IOException e){System.out.println("Error al formar desconexion.");}
-        }
-    }
     public static JSONObject processJSON(String mensaje){
         JSONObject obj = null;
         JSONParser parser = new JSONParser();
@@ -167,13 +108,6 @@ public class CONNECTION implements Runnable {
         return obj;
     }
 
-
-
-    public void ListarTitanes() throws Exception{
-        os.writeUTF("Hola soy Listar");
-        System.out.println("Hola soy Listar");
-
-    }
     public void ListarCapturados() throws Exception{
         os.writeUTF("Hola soy Listar Capturados");
         System.out.println("Hola soy L Capturados");
@@ -181,17 +115,5 @@ public class CONNECTION implements Runnable {
     public void ListarAsesinados() throws Exception{
         os.writeUTF("Hola soy Listar Asesinados");
         System.out.println("Hola soy L Asesinados");
-    }
-    public void Capturar(int id) throws Exception{
-        os.writeUTF("Hola soy Capturar");
-        System.out.println("Hola soy Capturar"+ id);
-    }
-    public void Asesinar(int id) throws Exception {
-        os.writeUTF("Hola soy Asesinar");
-        System.out.println("Hola soy Asesinar"+ id);
-    }
-    public void ChangeDistrit(String name) throws  Exception{
-        os.writeUTF("Hola soy cambio de distrito a "+name);
-        System.out.println("Hola soy cambio de distrito a "+name);
     }
 }
