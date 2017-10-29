@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Distrit:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Distrit_jar</output-path>
-    <root id="archive" name="Distrit.jar">
-      <element id="module-output" name="Distrit" />
-    </root>
-  </artifact>
-</component>
