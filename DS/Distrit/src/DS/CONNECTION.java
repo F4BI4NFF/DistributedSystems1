@@ -5,6 +5,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.net.MulticastSocket;
 import java.net.Socket;
 
 /**
@@ -12,40 +13,55 @@ import java.net.Socket;
  */
 public class CONNECTION implements Runnable {
     private Socket cs;
+    private MulticastSocket multisocket;
     private Distrit distrito;
     private DataInputStream is = null;
     private DataOutputStream os = null;
 
-    public CONNECTION(Socket socket, Distrit distrito){
+    public CONNECTION(Socket socket, MulticastSocket msocket, Distrit distrito){
         this.cs = socket;
+        this.multisocket = msocket;
         this.distrito = distrito;
     }
 
     @Override
     public void run(){
-        try {
+        try{
+            is = new DataInputStream(cs.getInputStream());
+            os = new DataOutputStream(cs.getOutputStream());
+            Console console = System.console();
             try{
-                is = new DataInputStream(cs.getInputStream());
-                os = new DataOutputStream(cs.getOutputStream());
-                try{
-                    String comando = is.readUTF();
-                    System.out.println("Aqui en el servidor se ejecuta el comando : "+comando);
-                    processMsg(comando);
-                }catch (CommandUnavailableException e) {
-                    System.out.println(e);
-                    assert (false);
+                String comando = is.readUTF();
+                for (String cmd = console.readLine("[Distrito"+distrito.getDistritName()+"] Ingrese accion a realizar\n[Distrito"+distrito.getDistritName()+"] 1.- Publicar Titan\n[Distrito"+distrito.getDistritName()+"] x.- Para Salir\n");
+                     !cmd.equals("x");
+                     cmd = console.readLine("********************************\n[Distrito"+distrito.getDistritName()+"] Ingrese accion a realizar\n[Distrito"+distrito.getDistritName()+"] 1.- Publicar Titan\n[Distrito"+distrito.getDistritName()+"] x.- Para Salir\n")
+                        ){
+                    if (cmd.equals("1")){
+                        //Se agrega un Titan
+                        String NombreTitan = console.readLine("[Distrito"+distrito.getDistritName()+"]Introducir nombre \n>");
+                        String TipoTitan = console.readLine("[Distrito"+distrito.getDistritName()+"]Introducir tipo :\n 1.- Normal\n 2.- Excentrico\n 3.- Cambiante\n > ");
+                        Titan titan = new Titan(NombreTitan,Integer.parseInt(TipoTitan),distrito.getID());
+                        System.out.println("[Distrito"+distrito.getDistritName()+"] Se ha publicado el titán"+ NombreTitan );
+                        System.out.println("*****************");
+                        System.out.println("ID: "+titan.getID_titan());
+                        System.out.println("Nombre: "+titan.getNombre_titan());
+                        System.out.println("Tipo: " + titan.getTipo_titan());
+                        System.out.println("*****************");
+                    }
+                    else{
+                        System.out.println("[Distrito\"+distrito.getDistritName()+\"] Comando invalido");
+                    }
                 }
-
-            }catch (IOException e){
-                System.out.println("cacaa aqui");
+                System.out.println("Aqui en el servidor se ejecuta el comando : "+comando);
+                processMsg(comando);
+            }catch (CommandUnavailableException e) {
                 System.out.println(e);
+                assert (false);
             }
-            String readString = is.readUTF();
-        } catch (IOException e) {
-            System.out.println("Cliente desconectado...");
+        }catch (IOException e){
+            System.out.println("cacaa aqui");
+            System.out.println(e);
         }
-
-
     }
     private static String initJSONfirst(String mode){
         JSONObject obj = new JSONObject();
@@ -156,4 +172,5 @@ public class CONNECTION implements Runnable {
         os.writeUTF("Hola soy cambio de distrito a "+name);
         System.out.println("Hola soy cambio de distrito a "+name);
     }
+
 }

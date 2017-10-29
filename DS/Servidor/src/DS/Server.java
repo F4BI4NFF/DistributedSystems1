@@ -10,8 +10,16 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Server {
+
+    private static final AtomicInteger Unico = new AtomicInteger(0);
+
+    public static synchronized AtomicInteger getUnico() {
+        return Unico;
+    }
+
     private String MultiCastIP;
     private int MultiCastPort;
 
@@ -52,6 +60,22 @@ public class Server {
         ListenPort = listenPort;
     }
 
+    private static Server servidor= null;
+
+    private Server(){}
+    private synchronized static void createInstance(){
+        if (servidor == null){
+            servidor = new Server();
+        }
+    }
+    public static Server getInstance(){
+        if(servidor == null){
+            createInstance();
+        }
+        return servidor;
+
+    }
+
     //----------------//
     //Insertar customs//
     //----------------//
@@ -60,7 +84,7 @@ public class Server {
 
     public static void main(String[] args){
         Console console = System.console();
-        Server servidor = new Server();
+        Server servidor = Server.getInstance();
         servidor.setListenPort(Integer.parseInt(
                 console.readLine("[Servidor Central] Ingresar Puerto de Trabajo Servidor Central \n")
                 )
@@ -99,11 +123,9 @@ public class Server {
                         t.start();
                     }
                 } catch (IOException e) {
-                    // Por omisión de texto se detecta el modo distrito
                     System.out.println(e.getMessage());
                 }
             }
-
         }
     }
 

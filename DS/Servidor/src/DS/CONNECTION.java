@@ -8,6 +8,7 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.net.Socket;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by breathtaKing on 07-06-2016.
@@ -74,6 +75,12 @@ public class CONNECTION implements Runnable {
                     }else if (fromclient.get("comando").equals("2")){
                         // Logica envio de peticion de lista (Capturados/Asesinados Globales)
                         this.ListarAsesinados();
+                    }else if (fromclient.get("comando").equals("3")){
+                        // El distrito pide un id unico para asignar
+                        AtomicInteger ID= Server.getInstance().getUnico();
+                        os.writeUTF(String.valueOf(ID.getAndIncrement()));
+
+
                     }else {
                         System.out.println("Comando invalido recivido de Distrito");
                     }
@@ -92,7 +99,6 @@ public class CONNECTION implements Runnable {
             System.out.println("cacaa aqui");
             System.out.println(e);
         }
-        //String readString = is.readUTF();
 
 
     }
