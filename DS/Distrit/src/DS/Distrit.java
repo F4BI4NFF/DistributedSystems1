@@ -1,30 +1,35 @@
 package DS;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import sun.rmi.server.InactiveGroupException;
 
-import java.awt.*;
-import java.io.BufferedReader;
+import javax.xml.crypto.Data;
 import java.io.Console;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
 public class Distrit {
-    //*************************//
+    //**********Server Information***********//
     private String DistritName;
     private String MultiCastIp;
     private int MultiCastPort;
     private String RequestIP;
-    private int ListenPort;
-    //*************************//
+    private int RequestPort;
+
+    private DatagramSocket serverSocket;
+    private DatagramPacket Packet;
+    private byte[] Data;
+
+    private int packetSize = 1024;
+
+    public int getPacketSize() {
+        return packetSize;
+    }
+
+    //***********Informacion relevante**************//
     List<String> lista_titanes = Collections.synchronizedList(new ArrayList<String>());
     List<String> lista_titanes_capturados = Collections.synchronizedList(new ArrayList<String>());
     List<String> lista_titanes_asesinados = Collections.synchronizedList(new ArrayList<String>());
@@ -38,12 +43,12 @@ public class Distrit {
         this.lista_titanes = lista_titanes;
     }
 
-    public int getListenPort() {
-        return ListenPort;
+    public int getRequestPort() {
+        return RequestPort;
     }
 
-    public void setListenPort(int listenPort) {
-        ListenPort = listenPort;
+    public void setRequestPort(int requestPort) {
+        RequestPort = requestPort;
     }
 
     public String getDistritName() {
@@ -102,39 +107,34 @@ public class Distrit {
         Console console = System.console();
         Distrit distrito = new Distrit();
         distrito.setDistritName(console.readLine("[Distrito] Nombre Servidor : "));
-        distrito.setMultiCastIp(console.readLine("[Distrito "+distrito.getDistritName()+"] IP Multicast : "));
-        distrito.setMultiCastPort(Integer.parseInt(console.readLine("[Distrito "+distrito.getDistritName()+" Puerto Multicast : ")));
-        distrito.setRequestIP(console.readLine("[Distrito "+distrito.getDistritName()+"] IP Peticiones : "));
-        distrito.setListenPort(Integer.parseInt(console.readLine("[Distrito "+distrito.getDistritName()+"] Puerto Peticiones : ")));
+        distrito.setMultiCastIp(console.readLine("[Distrito " + distrito.getDistritName() + "] IP Multicast : "));
+        distrito.setMultiCastPort(Integer.parseInt(console.readLine("[Distrito " + distrito.getDistritName() + " Puerto Multicast : ")));
+        distrito.setRequestIP(console.readLine("[Distrito " + distrito.getDistritName() + "] IP Peticiones : "));
+        distrito.setRequestPort(Integer.parseInt(console.readLine("[Distrito " + distrito.getDistritName() + "] Puerto Peticiones : ")));
 
         try {
-            ServerSocket listenSocket = new ServerSocket(distrito.getListenPort()); // Ip que entrega Cliente
+            DatagramSocket serverSocket = new DatagramSocket(distrito.getRequestPort());
             MulticastSocket castSocket = new MulticastSocket(distrito.getMultiCastPort());
             castSocket.joinGroup(InetAddress.getByName(distrito.getMultiCastIp()));
 
-            System.out.println("[Distrito "+distrito.getDistritName()+"] En espera de peticiones...");
-            /**
-            List<String> titanes = distrito.getLista_titanes();
-            Titan titan1 = publicar_titan(distrito.getDistritName());
-            titanes.add(titan1.getNombre_titan());
-            System.out.println(distrito.lista_titanes);
-            Titan titan2 = publicar_titan(distrito.getDistritName());
-            titanes.add(titan2.getNombre_titan());
-            distrito.setLista_titanes(titanes);
-            System.out.println("Ahora viene la lista de nombres!");
-            System.out.println(distrito.getLista_titanes());
+            System.out.println("[Distrito " + distrito.getDistritName() + "] En espera de peticiones...");
+            byte[] Data = new byte[distrito.getPacketSize()];
+            DatagramPacket Packet = new DatagramPacket(Data, Data.length);
 
-            System.out.println("Se acabó la creacion de titanes!");
-             **/
             while (true) {
-                Socket cs = listenSocket.accept();
+                try {
+                    serverSocket.receive(Packet);
+                } catch (IOException e) {
+                    System.err.println("Error: no se pudo recibir el packete UDP");
+                    System.exit(-1);
+                }
                 System.out.println("Nueva conexion entrante: ");
-                System.out.println("Puerto: " + cs.getInetAddress());
-                Thread t = new Thread(new CONNECTION(cs,castSocket,distrito));
+                System.out.println("Host: " + serverSocket.getInetAddress() + " , Port: "+ serverSocket.getPort());
+                Thread t = new Thread(new CONNECTION(serverSocket, castSocket, distrito, Data, Packet));
                 //System.out.println("Opciones... \n Publicar un titan:");
                 t.start();
             }
-        } catch (IOException e) {
+        }catch (IOException e) {
             //no se pudo abrir socket
             System.out.println(e.getMessage());
         }
@@ -144,20 +144,20 @@ public class Distrit {
         System.out.println("Publicar Titán ");
         Titan titan = new Titan();
         Scanner scanner = new Scanner(System.in);
-        String consola_distrito = "[Distrito "+ nombre_distrito +"]";
-        System.out.println(consola_distrito+" Introducir nombre:");
+        String consola_distrito = "[Distrito " + nombre_distrito + "]";
+        System.out.println(consola_distrito + " Introducir nombre:");
         String nombre = scanner.nextLine();
         titan.setNombre_titan(nombre);
-        System.out.println(consola_distrito+" Introducir tipo");
+        System.out.println(consola_distrito + " Introducir tipo");
         System.out.println("1.- Normal");
         System.out.println("2.- Excentrico");
         System.out.println("3.- Cambiante");
         Integer tipo = scanner.nextInt();
         titan.setTipo_titan(tipo);
-        System.out.println(consola_distrito+ " Se ha publicado el titan:"+ titan.getNombre_titan());
+        System.out.println(consola_distrito + " Se ha publicado el titan:" + titan.getNombre_titan());
         System.out.println("***************");
-        System.out.println("ID: "+titan.getID_titan());
-        System.out.println("Nombre: "+titan.getNombre_titan());
+        System.out.println("ID: " + titan.getID_titan());
+        System.out.println("Nombre: " + titan.getNombre_titan());
         System.out.println("Tipo: " + titan.getTipo_titan());
         System.out.println("***************");
         System.out.println("Nuevo titan publicado!");
@@ -165,10 +165,31 @@ public class Distrit {
         return titan;
 
     }
-    protected static int getID(){
+
+    protected static int getID() {
         int ID = -1;
 
 
         return ID;
+    }
+
+    public DatagramPacket getPacket() {
+        Data = new byte[1024];
+        Packet = new DatagramPacket(Data, Data.length);
+        try {
+            serverSocket.receive(Packet);
+        } catch (IOException e) {
+            System.err.println("Error: error while recieving packet");
+            return null;
+        }
+        return Packet;
+    }
+
+    public void sendPacket(DatagramPacket packet) {
+        try {
+            serverSocket.send(packet);
+        } catch (IOException e) {
+            System.err.println("Error: error while sending packet");
+        }
     }
 }

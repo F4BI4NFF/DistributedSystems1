@@ -6,19 +6,45 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Scanner;
 
 public class Client {
     private String DistritName;
     private String CentralServerIP;
     private int CentralServerPort;
-    private String MultiCastListen;
+    private String MultiCastIP;
+
+    private int MultiCastPort;
+    private String PeticionesIP;
+    private int PeticionesPort;
     private Boolean Conectado = false; // Conectado a un distrito
+
+    public int getMultiCastPort() {
+        return MultiCastPort;
+    }
+
+    public void setMultiCastPort(int multiCastPort) {
+        MultiCastPort = multiCastPort;
+    }
+
+    public String getPeticionesIP() {
+        return PeticionesIP;
+    }
+
+    public void setPeticionesIP(String peticionesIP) {
+        PeticionesIP = peticionesIP;
+    }
+
+    public int getPeticionesPort() {
+        return PeticionesPort;
+    }
+
+    public void setPeticionesPort(int peticionesPort) {
+        PeticionesPort = peticionesPort;
+    }
 
     public String getDistritName() {
         return DistritName;
@@ -44,12 +70,12 @@ public class Client {
         this.CentralServerPort = centralServerPort;
     }
 
-    public String getMultiCastListen() {
-        return MultiCastListen;
+    public String getMultiCastIP() {
+        return MultiCastIP;
     }
 
-    public void setMultiCastListen(String multiCastListen) {
-        MultiCastListen = multiCastListen;
+    public void setMultiCastIP(String multiCastIP) {
+        MultiCastIP = multiCastIP;
     }
 
 
@@ -98,20 +124,19 @@ public class Client {
                         }
 
                         //Conexion a distrito
-
-                        int puerto_peticion = Integer.parseInt(String.valueOf(list.get(3)));
-                        Socket distritsocket = new Socket(list.get(2), puerto_peticion);
-
-                        DataInputStream Dis = null;
-                        DataOutputStream Dos = null;
+                        //
+                        cliente.setPeticionesPort(Integer.parseInt(String.valueOf(list.get(3))));
+                        cliente.setPeticionesIP(list.get(2));
+                        //Socket distritsocket = new Socket(list.get(2), puerto_peticion);
+                        //
+                        //DataInputStream Dis = null;
+                        //DataOutputStream Dos = null;
+                        byte[] sendData = new byte[1024];
+                        byte[] receiveData = new byte[1024];
+                        DatagramPacket sendPacket;
+                        DatagramPacket receivePacket;
+                        DatagramSocket clientsocket = new DatagramSocket();
                         cliente.Conectado = true;
-                        try {
-                            Dis = new DataInputStream(distritsocket.getInputStream());
-                            Dos = new DataOutputStream(distritsocket.getOutputStream());
-
-                        } catch (IOException e) {
-                            System.out.println("Conexion: " + e.getMessage());
-                        }
 
                         //mostrar consola
                         System.out.println("[Cliente] Consola");
@@ -122,9 +147,19 @@ public class Client {
                             if (cmd.equals("1")) {
                                 //Listar Titanes
                                 initString = initJSON(String.valueOf(cmd), "caca");
-                                Dos.writeUTF(initString);
-                                fromserver = Dis.readUTF();
-                                System.out.println(fromserver);
+                                sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(cliente.getPeticionesIP()), cliente.getPeticionesPort());
+                                try
+                                {
+                                    clientsocket.send(sendPacket);
+                                }
+                                catch(IOException e)
+                                {
+                                    System.err.println("Error: al enviar datagrama");
+                                }
+                                receivePacket = new DatagramPacket(receiveData,receiveData.length);
+                                clientsocket.receive(receivePacket);
+                                fromserver = new String(receivePacket.getData());
+                                System.out.println("UDP desde el server : " + fromserver);
                                 System.out.println("----------------------------------");
 
                             } else if (cmd.equals("2")) {
@@ -151,22 +186,12 @@ public class Client {
                                             list.add(iterator.next());
                                         }
 
-                                        //Conexion a distrito
-
-                                        puerto_peticion = Integer.parseInt(String.valueOf(list.get(3)));
-                                        distritsocket.close();
-                                        distritsocket = new Socket(list.get(2), puerto_peticion);
-
-                                        Dis = null;
-                                        Dos = null;
-                                        cliente.Conectado = true;
-                                        try {
-                                            Dis = new DataInputStream(s.getInputStream());
-                                            Dos = new DataOutputStream(s.getOutputStream());
-
-                                        } catch (IOException e) {
-                                            System.out.println("Conexion: " + e.getMessage());
-                                        }
+                                        //Conexion a distrito se logra mediante el reemplazo de los datos
+                                        cliente.setDistritName(param);
+                                        cliente.setMultiCastIP(list.get(0));
+                                        cliente.setMultiCastPort(Integer.parseInt(list.get(1)));
+                                        cliente.setPeticionesIP(list.get(2));
+                                        cliente.setPeticionesPort(Integer.parseInt(list.get(3)));
 
 
                                         //System.out.println("");
@@ -262,4 +287,5 @@ public class Client {
         //}
         return obj;
     }
+
 }
