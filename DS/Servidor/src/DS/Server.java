@@ -5,12 +5,12 @@ import org.json.simple.JSONObject;
 
 import java.io.Console;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Server {
+
 
     private static final AtomicInteger Unico = new AtomicInteger(0);
 
@@ -18,10 +18,11 @@ public class Server {
         return Unico;
     }
 
-    private String MultiCastIP;
-    private int MultiCastPort;
-
     private int ListenPort;
+    private JSONObject DistritosActivos = new JSONObject();
+    private JSONObject ClientesActivos = new JSONObject();
+
+
 
     public JSONObject getDistritosActivos() {
         return DistritosActivos;
@@ -29,25 +30,6 @@ public class Server {
 
     public void DistritosActivos(JSONObject distritosActivos) {
         DistritosActivos = distritosActivos;
-    }
-
-    private JSONObject DistritosActivos = new JSONObject();
-    private JSONArray ClientesActivos = new JSONArray();
-
-    public String getMultiCastIP() {
-        return MultiCastIP;
-    }
-
-    public void setMultiCastIP(String multiCastIP) {
-        MultiCastIP = multiCastIP;
-    }
-
-    public int getMultiCastPort() {
-        return MultiCastPort;
-    }
-
-    public void setMultiCastPort(int multiCastPort) {
-        MultiCastPort = multiCastPort;
     }
 
     public int getListenPort() {
@@ -93,15 +75,15 @@ public class Server {
              cmd = console.readLine("****************************************************\n[Servidor Central] Ingrese accion a realizar\n[Servidor Central] 1.- Agregar Distrito\n[Servidor Central] 2.- Para Correr Server\n[Servidor Central] x.- Para Salir\n")) {
             if (cmd.equals("1")) {
                 String DistritName = console.readLine("[Servidor Central] Nombre Distrito: ");
-                servidor.setMultiCastIP(console.readLine("[Servidor Central] IP Multicast: "));
-                servidor.setMultiCastPort(Integer.parseInt(console.readLine("[Servidor Central] Puerto Multicast: ")));
+                String MultiCastIP = console.readLine("[Servidor Central] IP Multicast: ");
+                int MultiCastPort = Integer.parseInt(console.readLine("[Servidor Central] Puerto Multicast: "));
                 String IPPeticiones = console.readLine("[Servidor Central] IP Peticiones: ");
                 int port = Integer.parseInt(console.readLine("[Servidor Central] Puerto Peticiones :"));
 
                 JSONObject ActiveD = servidor.getDistritosActivos();
                 JSONArray list = new JSONArray();
-                list.add(servidor.getMultiCastIP());
-                list.add(servidor.getMultiCastPort());
+                list.add(MultiCastIP);
+                list.add(MultiCastPort);
                 list.add(IPPeticiones);
                 list.add(port);
                 ActiveD.put(DistritName,list);
@@ -110,14 +92,26 @@ public class Server {
             }
             else if (cmd.equals("2")){
                 try{
-                    ServerSocket listenSocket = new ServerSocket(servidor.getListenPort());
+                    DatagramSocket listenSocket = new DatagramSocket(servidor.getListenPort());
                     while (true) {
                         System.out.println("[Servidor Central] En espera de peticiones...");
-                        Socket cs = listenSocket.accept();
-                        System.out.println("Nueva conexion entrante: "+ listenSocket.getLocalSocketAddress());
-                        System.out.println("Puerto: " + listenSocket.getLocalPort() );
 
-                        Thread t = new Thread(new CONNECTION(cs,servidor.getDistritosActivos()));
+                        byte[] receiveData = new byte[1024];
+                        DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
+                        try {
+                            listenSocket.receive(receivePacket);
+                        } catch (IOException e) {
+                            System.err.println("Error: no se pudo recibir el packete UDP");
+                            System.exit(-1);
+                        }
+                        //Socket cs = listenSocket.accept();
+                        System.out.println("packet:"+ new String(receivePacket.getData()).trim());
+                        System.out.println("Nueva conexion entrante: "+ receivePacket.getAddress());
+                        System.out.println("Puerto: " + receivePacket.getPort() );
+
+                        //Inicia thread para manejar la respuesta al cliente
+
+                        Thread t = new Thread(new CONNECTION(receivePacket,servidor.getDistritosActivos()));
                         t.start();
                     }
                 } catch (IOException e) {

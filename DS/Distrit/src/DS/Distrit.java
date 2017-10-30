@@ -117,20 +117,25 @@ public class Distrit {
             MulticastSocket castSocket = new MulticastSocket(distrito.getMultiCastPort());
             castSocket.joinGroup(InetAddress.getByName(distrito.getMultiCastIp()));
 
-            System.out.println("[Distrito " + distrito.getDistritName() + "] En espera de peticiones...");
-            byte[] Data = new byte[distrito.getPacketSize()];
-            DatagramPacket Packet = new DatagramPacket(Data, Data.length);
+            //System.out.println("[Distrito " + distrito.getDistritName() + "] En espera de peticiones...");
+
 
             while (true) {
+                System.out.println("[Distrito " + distrito.getDistritName() + "] En espera de peticiones...");
+
+                byte[] receiveData = new byte[1024];
+                DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
                 try {
-                    serverSocket.receive(Packet);
+                    serverSocket.receive(receivePacket);
                 } catch (IOException e) {
                     System.err.println("Error: no se pudo recibir el packete UDP");
                     System.exit(-1);
                 }
-                System.out.println("Nueva conexion entrante: ");
-                System.out.println("Host: " + serverSocket.getInetAddress() + " , Port: "+ serverSocket.getPort());
-                Thread t = new Thread(new CONNECTION(serverSocket, castSocket, distrito, Data, Packet));
+                //Socket cs = listenSocket.accept();
+                System.out.println("packet:"+ new String(receivePacket.getData()).trim());
+                System.out.println("Nueva conexion entrante: "+ receivePacket.getAddress());
+                System.out.println("Puerto: " + receivePacket.getPort() );
+                Thread t = new Thread(new CONNECTION(serverSocket, castSocket, distrito, receivePacket));
                 //System.out.println("Opciones... \n Publicar un titan:");
                 t.start();
             }

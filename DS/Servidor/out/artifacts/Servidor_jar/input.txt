@@ -1,0 +1,13 @@
+9000
+1
+Trost
+224.1.1.1
+2424
+localhost
+9001
+1
+Santiago
+224.1.1.2
+2424
+localhost
+9002

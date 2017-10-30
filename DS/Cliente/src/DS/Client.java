@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -12,6 +13,13 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Client {
+
+    private DatagramSocket ClientSocket;
+    private DatagramPacket sendPacket;
+    private DatagramPacket receivePacket;
+    private byte[] sendData;
+    private byte[] receiveData;
+
     private String DistritName;
     private String CentralServerIP;
     private int CentralServerPort;
@@ -21,6 +29,32 @@ public class Client {
     private String PeticionesIP;
     private int PeticionesPort;
     private Boolean Conectado = false; // Conectado a un distrito
+
+    public String getMessage()
+    {
+        receiveData = new byte[1024];
+        receivePacket = new DatagramPacket(receiveData, receiveData.length);
+        try
+        {
+            ClientSocket.receive(receivePacket);
+        }
+        catch(IOException e)
+        {
+            System.err.println("No llego el datagrama");
+            return "";
+        }
+        return new String(receivePacket.getData()).trim();
+    }
+    public void sendMessage(String line,InetAddress ServerIP, int port) {
+        sendData = line.getBytes();
+        System.out.println(line);
+        sendPacket = new DatagramPacket(sendData, sendData.length, ServerIP, port);
+        try {
+            ClientSocket.send(sendPacket);
+        } catch (IOException e) {
+            System.err.println("No se envio el datagrama");
+        }
+    }
 
     public int getMultiCastPort() {
         return MultiCastPort;
@@ -89,20 +123,10 @@ public class Client {
 
         //Conexion a servidor
         try {
-            Socket s = new Socket(cliente.getCentralServerIP(), cliente.getCentralServerPort());
+            cliente.ClientSocket = new DatagramSocket();
             int comando = 10;
             while (comando != 0) {
                 String param = null;
-                DataInputStream is = null;
-                DataOutputStream os = null;
-                try {
-                    is = new DataInputStream(s.getInputStream());
-                    os = new DataOutputStream(s.getOutputStream());
-
-                } catch (IOException e) {
-                    System.out.println("Conexion: " + e.getMessage());
-                }
-                System.out.println("Conexion aceptada Servidor Central.");
 
                 //******//
                 //Menu  //
@@ -110,123 +134,127 @@ public class Client {
                 for (String cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir\n");
                      !cmd.equals("x");
                      cmd = console.readLine("[Cliente] Introducir Nombre de Distrito a Investigar, Ej: Trost, Shiganshina, x para salir\n")) {
+
                     cliente.setDistritName(cmd);
-                    os.writeUTF(initJSONfirst(cmd));
-                    String fromserver = is.readUTF();
+                    cliente.sendMessage(
+                            initJSONfirst(cmd),
+                            InetAddress.getByName(cliente.getCentralServerIP()),
+                            cliente.getCentralServerPort());
+                    String fromserver = cliente.getMessage();
+                    System.out.println("recibido del server: "+fromserver);
                     JSONObject fromserverobj = processJSON(fromserver);
                     if (fromserverobj.get("response").equals("aceptado")) {
                         //Conexion aceptada
                         JSONArray msg = (JSONArray) fromserverobj.get("datos");
-                        Iterator<String> iterator = msg.iterator();
-                        List<String> list = new ArrayList<>();
-                        while (iterator.hasNext()) {
-                            list.add(iterator.next());
-                        }
-
-                        //Conexion a distrito
-                        //
-                        cliente.setPeticionesPort(Integer.parseInt(String.valueOf(list.get(3))));
-                        cliente.setPeticionesIP(list.get(2));
-                        //Socket distritsocket = new Socket(list.get(2), puerto_peticion);
-                        //
-                        //DataInputStream Dis = null;
-                        //DataOutputStream Dos = null;
-                        byte[] sendData = new byte[1024];
-                        byte[] receiveData = new byte[1024];
-                        DatagramPacket sendPacket;
-                        DatagramPacket receivePacket;
-                        DatagramSocket clientsocket = new DatagramSocket();
-                        cliente.Conectado = true;
-
-                        //mostrar consola
-                        System.out.println("[Cliente] Consola");
-                        String initString;
-                        for (cmd = console.readLine("[Cliente] (1) Listar Titanes\n[Cliente] (2) Cambiar Distrito\n[Cliente] (3) Capturar Titan\n[Cliente] (4) Asesinar Titan\n[Cliente] (5) Lista de Titanes Capturados\n[Cliente] (6) Lista de Titanes Asesinados\n[Cliente] (x) Desconectar\n");
-                             !cmd.equals("x");
-                             cmd = console.readLine("****************************************************\n[Cliente] (1) Listar Titanes\n[Cliente] (2) Cambiar Distrito\n[Cliente] (3) Capturar Titan\n[Cliente] (4) Asesinar Titan\n[Cliente] (5) Lista de Titanes Capturados\n[Cliente] (6) Lista de Titanes Asesinados\n[Cliente] (x) Desconectar\n")) {
-                            if (cmd.equals("1")) {
-                                //Listar Titanes
-                                initString = initJSON(String.valueOf(cmd), "caca");
-                                sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(cliente.getPeticionesIP()), cliente.getPeticionesPort());
-                                try
-                                {
-                                    clientsocket.send(sendPacket);
-                                }
-                                catch(IOException e)
-                                {
-                                    System.err.println("Error: al enviar datagrama");
-                                }
-                                receivePacket = new DatagramPacket(receiveData,receiveData.length);
-                                clientsocket.receive(receivePacket);
-                                fromserver = new String(receivePacket.getData());
-                                System.out.println("UDP desde el server : " + fromserver);
-                                System.out.println("----------------------------------");
-
-                            } else if (cmd.equals("2")) {
-                                if (!cliente.Conectado) {
-                                    System.out.println("Usted no esta conectado a ningun distrito");
-                                } else {
-                                    //Cambiar de distrito
-                                    param = console.readLine("Ingrese distrito a investigar :");
-                                    //initString = initJSON(String.valueOf(cmd), param);
-                                    try {
-                                        os.writeUTF(param);
-                                    }catch (IOException e){
-                                        e.getMessage();
-                                    }
-                                    fromserver = is.readUTF();
-                                    fromserverobj = processJSON(fromserver);
-                                    if (fromserverobj.get("response").equals("aceptado")) {
-                                        //Conexion aceptada
-                                        cliente.setDistritName(param);
-                                        msg = (JSONArray) fromserverobj.get("datos");
-                                        iterator = msg.iterator();
-                                        list = new ArrayList<>();
-                                        while (iterator.hasNext()) {
-                                            list.add(iterator.next());
-                                        }
-
-                                        //Conexion a distrito se logra mediante el reemplazo de los datos
-                                        cliente.setDistritName(param);
-                                        cliente.setMultiCastIP(list.get(0));
-                                        cliente.setMultiCastPort(Integer.parseInt(list.get(1)));
-                                        cliente.setPeticionesIP(list.get(2));
-                                        cliente.setPeticionesPort(Integer.parseInt(list.get(3)));
-
-
-                                        //System.out.println("");
-                                    }
-                                    else{
-                                        System.out.println("Conexión no autorizada para el Distrito de " + cliente.getDistritName());
-                                        System.out.println("Usted sigue en el distrito de "+cliente.getDistritName());
-                                    }
-                                }
-
-
-                            } else if (cmd.equals("3")) {
-                                // Capturar titan
-                                initString = initJSON(String.valueOf(cmd), param);
-                                os.writeUTF(initString);
-
-                            } else if (cmd.equals("4")) {
-                                // Asesinar titan
-                                initString = initJSON(String.valueOf(cmd), param);
-                                os.writeUTF(initString);
-
-                            } else if (cmd.equals("5")) {
-                                // Lista titanes caputados
-                                initString = initJSON(String.valueOf(cmd), param);
-                                os.writeUTF(initString);
-                            } else if (cmd.equals("6")) {
-                                // Lista titanes asesinados
-                                initString = initJSON(String.valueOf(cmd), param);
-                                os.writeUTF(initString);
-
-                            } else {
-                                System.out.println("Comando no válido");
+                        try{
+                            Iterator<String> iterator = msg.iterator();
+                            List<String> list = new ArrayList<>();
+                            while (iterator.hasNext()) {
+                                list.add(iterator.next());
                             }
+                            //Conexion a distrito
+                            //
+                            cliente.setMultiCastIP(list.get(0));
+                            cliente.setMultiCastPort(Integer.parseInt(String.valueOf(list.get(1))));
+                            cliente.setPeticionesIP(list.get(2));
+                            cliente.setPeticionesPort(Integer.parseInt(String.valueOf(list.get(3))));
 
+                            cliente.ClientSocket = new DatagramSocket();
+                            cliente.Conectado = true;
+
+                            //mostrar consola
+                            System.out.println("[Cliente] Consola");
+                            String initString;
+                            for (cmd = console.readLine("[Cliente] (1) Listar Titanes\n[Cliente] (2) Cambiar Distrito\n[Cliente] (3) Capturar Titan\n[Cliente] (4) Asesinar Titan\n[Cliente] (5) Lista de Titanes Capturados\n[Cliente] (6) Lista de Titanes Asesinados\n[Cliente] (x) Desconectar\n");
+                                 !cmd.equals("x");
+                                 cmd = console.readLine("****************************************************\n[Cliente] (1) Listar Titanes\n[Cliente] (2) Cambiar Distrito\n[Cliente] (3) Capturar Titan\n[Cliente] (4) Asesinar Titan\n[Cliente] (5) Lista de Titanes Capturados\n[Cliente] (6) Lista de Titanes Asesinados\n[Cliente] (x) Desconectar\n")) {
+                                if (cmd.equals("1")) {
+                                    //Listar Titanes
+
+                                    //cliente.sendData = initJSON(String.valueOf(cmd), "comodin").getBytes();
+                                    cliente.sendMessage(
+                                            initJSON(String.valueOf(cmd),"comodin"),
+                                            InetAddress.getByName(cliente.getPeticionesIP()),
+                                            cliente.getPeticionesPort());
+                                    //cliente.getMessage();
+                                    fromserver = cliente.getMessage();
+                                    System.out.println("UDP desde el server : " + fromserver);
+                                    System.out.println("----------------------------------");
+
+                                } else if (cmd.equals("2")) {
+                                    if (!cliente.Conectado) {
+                                        System.out.println("Usted no esta conectado a ningun distrito");
+                                    } else {
+                                        //Cambiar de distrito
+                                        param = console.readLine("Ingrese distrito a investigar :");
+                                        //initString = initJSON(String.valueOf(cmd), param);
+                                        cliente.sendMessage(
+                                                initJSONfirst(param),
+                                                InetAddress.getByName(cliente.getCentralServerIP()),
+                                                cliente.getCentralServerPort());
+                                        fromserver = cliente.getMessage();
+                                        System.out.println("mensaje buscador : "+fromserver);
+                                        fromserverobj = processJSON(fromserver);
+                                        if (fromserverobj.get("response").equals("aceptado")) {
+                                            //Conexion aceptada
+                                            cliente.setDistritName(param);
+                                            msg = (JSONArray) fromserverobj.get("datos");
+                                            iterator = msg.iterator();
+                                            list = new ArrayList<>();
+                                            while (iterator.hasNext()) {
+                                                list.add(iterator.next());
+                                            }
+
+                                            //Conexion a distrito se logra mediante el reemplazo de los datos
+                                            cliente.setDistritName(param);
+                                            cliente.setMultiCastIP(list.get(0));
+                                            cliente.setMultiCastPort(Integer.parseInt(String.valueOf(list.get(1))));
+                                            cliente.setPeticionesIP(list.get(2));
+                                            cliente.setPeticionesPort(Integer.parseInt(String.valueOf(list.get(3))));
+
+
+                                            //System.out.println("");
+                                            System.out.println("Conexión autorizada para el Distrito de " + cliente.getDistritName());
+                                        }
+                                        else{
+                                            System.out.println("Conexión no autorizada para el Distrito de " + cliente.getDistritName());
+                                            System.out.println("Usted sigue en el distrito de "+cliente.getDistritName());
+                                        }
+                                    }
+
+
+                                } else if (cmd.equals("3")||cmd.equals("4")) {
+                                    // Capturar titan,Asesinar titan
+                                    //initString = initJSON(String.valueOf(cmd), param);
+                                    //os.writeUTF(initString);
+                                    cliente.sendMessage(initJSON(String.valueOf(cmd), param),
+                                            InetAddress.getByName(cliente.getPeticionesIP()),
+                                            cliente.getPeticionesPort());
+
+                                    //Se espera una respuesta?
+
+                                    //fromserver = cliente.getMessage();
+                                    //fromserverobj = processJSON(fromserver);
+                                } else if (cmd.equals("5")||cmd.equals("6")) {
+                                    // Listas capturados/asesinados
+                                    cliente.sendMessage(initJSON(String.valueOf(cmd), param),
+                                            InetAddress.getByName(cliente.getCentralServerIP()),
+                                            cliente.getCentralServerPort());
+
+                                    //Se espera una respuesta?
+
+                                    //fromserver = cliente.getMessage();
+                                    //fromserverobj = processJSON(fromserver);
+
+                                } else {
+                                    System.out.println("Comando no válido");
+                                }
+
+                            }
+                        }catch (NullPointerException e){
+                            System.out.println(msg);
                         }
+
 
 
                     } else {
@@ -234,14 +262,9 @@ public class Client {
                     }
 
                 }
-                //String fromserver = is.readUTF();
-                //System.out.println("Server: " + fromserver);
-                is.close();
-                os.close();
                 comando = 0;
 
             }
-            s.close();
 
         } catch (UnknownHostException e1) {
             System.out.println("Socket: " + e1.getMessage());
@@ -287,5 +310,4 @@ public class Client {
         //}
         return obj;
     }
-
 }

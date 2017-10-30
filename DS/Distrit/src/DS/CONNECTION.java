@@ -5,29 +5,52 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.MulticastSocket;
-import java.net.Socket;
+import java.net.*;
 
 /**
  * Created by breathtaKing on 07-06-2016.
  */
 public class CONNECTION implements Runnable {
-    private DatagramSocket cs;
     private MulticastSocket multisocket;
     private Distrit distrito;
-    private byte[] Data;
-    private DatagramPacket Packet;
-    //private DataInputStream is = null;
-    //private DataOutputStream os = null;
 
-    public CONNECTION(DatagramSocket socket, MulticastSocket msocket, Distrit distrito, byte[] data, DatagramPacket packet){
-        this.cs = socket;
+    private DatagramSocket ServerSocket;
+    private DatagramPacket sendPacket;
+    private DatagramPacket receivePacket;
+    private byte[] sendData;
+    private byte[] receiveData;
+
+    public String getMessage()
+    {
+        receiveData = new byte[1024];
+        receivePacket = new DatagramPacket(receiveData, receiveData.length);
+        try
+        {
+            this.ServerSocket.receive(this.receivePacket);
+        }
+        catch(IOException e)
+        {
+            System.out.println(e.getMessage());
+            System.err.println("No llego el datagrama");
+            return "";
+        }
+        return new String(this.receivePacket.getData()).trim();
+    }
+    public void sendMessage(String line, InetAddress ServerIP, int port) {
+        sendData = line.getBytes();
+        sendPacket = new DatagramPacket(sendData, sendData.length, ServerIP, port);
+        try {
+            ServerSocket.send(sendPacket);
+        } catch (IOException e) {
+            System.err.println("No se envio el datagrama");
+        }
+    }
+
+    public CONNECTION(DatagramSocket socket, MulticastSocket msocket, Distrit distrito, DatagramPacket packet){
+        this.ServerSocket = socket;
         this.multisocket = msocket;
         this.distrito = distrito;
-        this.Data = data;
-        this.Packet = packet;
+        this.receivePacket = packet;
     }
 
     @Override
@@ -37,7 +60,8 @@ public class CONNECTION implements Runnable {
         Console console = System.console();
         try{
             //String comando = is.readUTF();
-            String comando = new String(Packet.getData());
+            String comando = new String(this.receivePacket.getData()).trim();
+            System.out.println(comando);
             for (String cmd = console.readLine("[Distrito"+distrito.getDistritName()+"] Ingrese accion a realizar\n[Distrito"+distrito.getDistritName()+"] 1.- Publicar Titan\n[Distrito"+distrito.getDistritName()+"] x.- Para Salir\n");
                  !cmd.equals("x");
                  cmd = console.readLine("********************************\n[Distrito"+distrito.getDistritName()+"] Ingrese accion a realizar\n[Distrito"+distrito.getDistritName()+"] 1.- Publicar Titan\n[Distrito"+distrito.getDistritName()+"] x.- Para Salir\n")
@@ -55,7 +79,7 @@ public class CONNECTION implements Runnable {
                     System.out.println("*****************");
                 }
                 else{
-                    System.out.println("[Distrito\"+distrito.getDistritName()+\"] Comando invalido");
+                    System.out.println("[Distrito"+distrito.getDistritName()+"] Comando invalido");
                 }
             }
             System.out.println("Aqui en el servidor se ejecuta el comando : "+comando);
