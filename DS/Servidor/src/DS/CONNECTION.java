@@ -7,6 +7,9 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -47,16 +50,15 @@ public class CONNECTION implements Runnable {
     }
 
     public JSONObject getDA() {
-        return DA;
+        return servidor.getDistritosActivos();
     }
 
-    public void setDA(JSONObject DA) {
-        this.DA = DA;
-    }
 
-    private JSONObject DA = new JSONObject();
+    private Server servidor;
 
-    public CONNECTION(DatagramPacket packet, JSONObject distritos){
+    public CONNECTION(DatagramPacket packet, Server serv){
+        this.receivePacket = packet;
+        this.servidor = serv;
         try{
             this.ServerSocket = new DatagramSocket();
 
@@ -65,8 +67,6 @@ public class CONNECTION implements Runnable {
         }
         //System.out.println(new String(packet.getData()));
         //System.out.println(socket.getLocalPort());
-        this.receivePacket = packet;
-        this.DA = distritos;
     }
 
     @Override
@@ -113,14 +113,12 @@ public class CONNECTION implements Runnable {
                         break;
                     }
                     else{
-                        System.out.println("[Servidor Central]Comando invalido\n");
+                        System.out.println("[Servidor Central] Comando invalido\n");
                     }
                     //comando = this.getMessage();
 
                 }
                 System.out.println("[Servidor Central] En espera de peticiones...");
-                //os.close();
-                //is.close();
             }else if (fromclient.get("tipo").equals("Distrito")){
                 if (fromclient.get("comando").equals("1")){
                     // Logica recepcion de lista (Capturados/Asesinados Globales)
@@ -137,6 +135,31 @@ public class CONNECTION implements Runnable {
                             res.toJSONString(),
                             this.receivePacket.getAddress(),
                             this.receivePacket.getPort());
+
+                }else if (fromclient.get("comando").equals("4")){
+                    //Actualizar lista capturados
+                    JSONArray ls = (JSONArray) fromclient.get("datos");
+                    Iterator<String> iterator = ls.iterator();
+                    List<String> list = new ArrayList<>();
+                    while (iterator.hasNext()) {
+                        list.add(iterator.next());
+                    }
+
+                    Titan t = new Titan(list.get(0),Integer.parseInt(String.valueOf(list.get(1))),Integer.parseInt(String.valueOf(list.get(2))));
+                    servidor.getLista_titanes_capturados().add(t);
+
+                }else if (fromclient.get("comando").equals("5")){
+                    //Actualizar lista asesinados
+
+                    JSONArray ls = (JSONArray) fromclient.get("datos");
+                    Iterator<String> iterator = ls.iterator();
+                    List<String> list = new ArrayList<>();
+                    while (iterator.hasNext()) {
+                        list.add(iterator.next());
+                    }
+
+                    Titan t = new Titan(list.get(0),Integer.parseInt(String.valueOf(list.get(1))),Integer.parseInt(String.valueOf(list.get(2))));
+                    servidor.getLista_titanes_asesinados().add(t);
 
                 }else {
                     System.out.println("Comando invalido recivido de Distrito");
@@ -168,9 +191,41 @@ public class CONNECTION implements Runnable {
     public void ListarCapturados() throws Exception{
         //os.writeUTF("Hola soy Listar Capturados");
         System.out.println("Hola soy L Capturados");
+        //Enviar respuesta
+        String mensaje = "{}";
+        JSONObject titanes = new JSONObject();
+        for (Titan t : servidor.getLista_titanes_capturados()){
+            //Sacar y Capturar + multicast
+            JSONArray list = new JSONArray();
+            list.add(t.getNombre_titan());
+            list.add(t.getTipo_titan());
+            titanes.put(t.getID_titan(),list);
+
+        }
+        mensaje = titanes.toJSONString();
+        JSONObject obj = new JSONObject();
+        obj.put("comando","7");
+        obj.put("mensaje",mensaje);
+        sendMessage(obj.toJSONString(),receivePacket.getAddress(),receivePacket.getPort());
     }
     public void ListarAsesinados() throws Exception{
         //os.writeUTF("Hola soy Listar Asesinados");
         System.out.println("Hola soy L Asesinados");
+        //Enviar respuesta
+        String mensaje = "{}";
+        JSONObject titanes = new JSONObject();
+        for (Titan t : servidor.getLista_titanes_asesinados()){
+            //Sacar y Capturar + multicast
+            JSONArray list = new JSONArray();
+            list.add(t.getNombre_titan());
+            list.add(t.getTipo_titan());
+            titanes.put(t.getID_titan(),list);
+
+        }
+        mensaje = titanes.toJSONString();
+        JSONObject obj = new JSONObject();
+        obj.put("comando","7");
+        obj.put("mensaje",mensaje);
+        sendMessage(obj.toJSONString(),receivePacket.getAddress(),receivePacket.getPort());
     }
 }

@@ -251,13 +251,14 @@ public class Client {
                                 } else if (cmd.equals("5")||cmd.equals("6")) {
                                     // Listas capturados/asesinados
                                     cliente.sendMessage(initJSON(String.valueOf(cmd), param),
-                                            InetAddress.getByName(cliente.getCentralServerIP()),
-                                            cliente.getCentralServerPort());
+                                            InetAddress.getByName(cliente.getPeticionesIP()),
+                                            cliente.getPeticionesPort());
 
                                     //Se espera una respuesta?
 
-                                    //fromserver = cliente.getMessage();
-                                    //fromserverobj = processJSON(fromserver);
+                                    fromserver = cliente.getMessage();
+                                    System.out.println("Mensaje L : "+fromserver);
+                                    fromserverobj = processJSON(fromserver);
 
                                 } else {
                                     System.out.println("Comando no válido");

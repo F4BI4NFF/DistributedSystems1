@@ -7,6 +7,9 @@ import java.io.Console;
 import java.io.IOException;
 import java.net.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Server {
@@ -55,6 +58,27 @@ public class Server {
         return servidor;
 
     }
+
+    List<Titan> lista_titanes_capturados = Collections.synchronizedList(new ArrayList<Titan>());
+    List<Titan> lista_titanes_asesinados = Collections.synchronizedList(new ArrayList<Titan>());
+
+
+    public List<Titan> getLista_titanes_capturados() {
+        return lista_titanes_capturados;
+    }
+
+    public void setLista_titanes_capturados(List<Titan> lista_titanes_capturados) {
+        this.lista_titanes_capturados = lista_titanes_capturados;
+    }
+
+    public List<Titan> getLista_titanes_asesinados() {
+        return lista_titanes_asesinados;
+    }
+
+    public void setLista_titanes_asesinados(List<Titan> lista_titanes_asesinados) {
+        this.lista_titanes_asesinados = lista_titanes_asesinados;
+    }
+
 
     //----------------//
     //Insertar customs//
@@ -111,7 +135,7 @@ public class Server {
 
                         //Inicia thread para manejar la respuesta al cliente
 
-                        Thread t = new Thread(new CONNECTION(receivePacket,servidor.getDistritosActivos()));
+                        Thread t = new Thread(new CONNECTION(receivePacket,servidor));
                         t.start();
                     }
                 } catch (IOException e) {

@@ -24,6 +24,9 @@ public class CONNECTION implements Runnable {
     private byte[] sendData;
     private byte[] receiveData;
 
+    private InetAddress clienthost;
+    private int clientport;
+
     public String getMessage()
     {
         receiveData = new byte[1024];
@@ -66,6 +69,8 @@ public class CONNECTION implements Runnable {
         this.multisocket = msocket;
         this.distrito = distrito;
         this.receivePacket = packet;
+        this.clienthost = packet.getAddress();
+        this.clientport = packet.getPort();
     }
 
     @Override
@@ -95,7 +100,20 @@ public class CONNECTION implements Runnable {
         JSONObject obj = new JSONObject();
         obj.put("comando",mode);
         // name comodin por si se necesita modificar a gusto
-        obj.put("name",name);
+        obj.put("tipo",name);
+        return obj.toJSONString();
+    }
+    private static String unitJSON(String comando,String nombre,int tipo,int id){
+        //Para codificar el comando que se envia al servidor
+        JSONObject obj = new JSONObject();
+        obj.put("comando",comando);
+        // name comodin por si se necesita modificar a gusto
+        obj.put("tipo","Distrito");
+        JSONArray ls = new JSONArray();
+        ls.add(nombre);
+        ls.add(tipo);
+        ls.add(id);
+        obj.put("datos",ls);
         return obj.toJSONString();
     }
     public void processMsg(String jsonString) throws CommandUnavailableException{
@@ -150,8 +168,22 @@ public class CONNECTION implements Runnable {
                 System.out.println(e.getMessage());
             }
         }
+        else if (obj.get("comando").equals("7")){
+            //Redirigir
+            //Recibir del server central
+            JSONParser parser1 = new JSONParser();
+            try {
+                obj = (JSONObject) parser1.parse((String)obj.get("mensaje"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
+            JSONObject fromserver = obj;
+            //Enviar al cliente
+            sendMessage(fromserver.toJSONString(),clienthost,clientport);
+        }
         else {
-            System.out.println("Comando no reconocido, prueba nuevamente.");
+            System.out.println("Comando invalido ha llegado al distrito");
         }
     }
 
@@ -170,16 +202,22 @@ public class CONNECTION implements Runnable {
         String response = titanes.toJSONString();
         System.out.println("respuesta de titanes : "+response);
         System.out.println(response);
-        sendMessage(response,receivePacket.getAddress(),receivePacket.getPort());
+        sendMessage(response,clienthost,clientport);
 
     }
     public void ListarCapturados() throws Exception{
         //os.writeUTF("Hola soy Listar Capturados");
         System.out.println("Hola soy L Capturados");
+        String mensaje = initJSON("1","Distrito");
+        sendMessage(mensaje,InetAddress.getByName(distrito.getCentralIP()),distrito.getCentralPort());
+
+
     }
     public void ListarAsesinados() throws Exception{
         //os.writeUTF("Hola soy Listar Asesinados");
         System.out.println("Hola soy L Asesinados");
+        String mensaje = initJSON("2","Distrito");
+        sendMessage(mensaje,InetAddress.getByName(distrito.getCentralIP()),distrito.getCentralPort());
     }
     public void Capturar(int id) throws Exception{
         //os.writeUTF("Hola soy Capturar");
@@ -193,7 +231,9 @@ public class CONNECTION implements Runnable {
                 distrito.getLista_titanes_capturados().add(t);
                 tipo = t.getNombreTip(t.getTipo_titan());
                 String mensaje = "[Cliente] Se ha capturado un titán! " + t.getNombre_titan() + ", tipo " + tipo + ", id " + t.getID_titan();
-                // Multicast
+                // Multicast y Server
+                sendMessage(unitJSON("4",t.getNombre_titan(),t.getTipo_titan(),t.getID_titan()),
+                        InetAddress.getByName(distrito.getCentralIP()),distrito.getCentralPort());
                 sendMultiCast(mensaje, InetAddress.getByName(distrito.getMultiCastIp()), distrito.getMultiCastPort());
             }
         }
@@ -210,13 +250,12 @@ public class CONNECTION implements Runnable {
                 tipo = t.getNombreTip(t.getTipo_titan());
                 String mensaje = "[Cliente] Se ha asesinado un titán! "+t.getNombre_titan()+", tipo "+tipo+", id "+t.getID_titan();
                 // Multicast
+                sendMessage(unitJSON("5",t.getNombre_titan(),t.getTipo_titan(),t.getID_titan()),
+                        InetAddress.getByName(distrito.getCentralIP()),distrito.getCentralPort());
+
                 sendMultiCast(mensaje,InetAddress.getByName(distrito.getMultiCastIp()),distrito.getMultiCastPort());
             }
         }
-    }
-    public void ChangeDistrit(String name) throws  Exception{
-        //os.writeUTF("Hola soy cambio de distrito a "+name);
-        System.out.println("Hola soy cambio de distrito a "+name);
     }
 
 }
