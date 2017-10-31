@@ -7,19 +7,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cbb273e7-3322-424b-8cab-4032e29c9e28" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/artifacts/Cliente_jar/Cliente.jar" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out/production/Cliente/DS/Listener.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../Distrit/out/production/Distrit/DS/Notify.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/DS/Listener.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../Distrit/src/DS/Notify.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/artifacts/Cliente_jar/Cliente.jar" afterPath="$PROJECT_DIR$/out/artifacts/Cliente_jar/Cliente.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/Cliente/DS/Client.class" afterPath="$PROJECT_DIR$/out/production/Cliente/DS/Client.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Distrit/out/artifacts/Distrit_jar/Distrit.jar" afterPath="$PROJECT_DIR$/../Distrit/out/artifacts/Distrit_jar/Distrit.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Distrit/out/production/Distrit/DS/CONNECTION.class" afterPath="$PROJECT_DIR$/../Distrit/out/production/Distrit/DS/CONNECTION.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Distrit/out/production/Distrit/DS/Distrit.class" afterPath="$PROJECT_DIR$/../Distrit/out/production/Distrit/DS/Distrit.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Distrit/out/production/Distrit/DS/Titan.class" afterPath="$PROJECT_DIR$/../Distrit/out/production/Distrit/DS/Titan.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/out/artifacts/Servidor_jar/Servidor.jar" afterPath="$PROJECT_DIR$/../Servidor/out/artifacts/Servidor_jar/Servidor.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/out/production/Servidor/DS/CONNECTION.class" afterPath="$PROJECT_DIR$/../Servidor/out/production/Servidor/DS/CONNECTION.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/out/production/Servidor/DS/Server.class" afterPath="$PROJECT_DIR$/../Servidor/out/production/Servidor/DS/Server.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DS/Client.java" afterPath="$PROJECT_DIR$/src/DS/Client.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Distrit/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../Distrit/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Distrit/src/DS/CONNECTION.java" afterPath="$PROJECT_DIR$/../Distrit/src/DS/CONNECTION.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Distrit/src/DS/Distrit.java" afterPath="$PROJECT_DIR$/../Distrit/src/DS/Distrit.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Distrit/src/DS/Titan.java" afterPath="$PROJECT_DIR$/../Distrit/src/DS/Titan.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../Servidor/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/src/DS/CONNECTION.java" afterPath="$PROJECT_DIR$/../Servidor/src/DS/CONNECTION.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/src/DS/Server.java" afterPath="$PROJECT_DIR$/../Servidor/src/DS/Server.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -34,9 +41,21 @@
       <file leaf-file-name="Client.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/DS/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2040">
-              <caret line="43" column="22" lean-forward="true" selection-start-line="43" selection-start-column="22" selection-end-line="43" selection-end-column="22" />
+            <state relative-caret-position="-373">
+              <caret line="241" column="87" lean-forward="true" selection-start-line="241" selection-start-column="87" selection-end-line="241" selection-end-column="87" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Listener.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/DS/Listener.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="508">
+              <caret line="62" column="5" lean-forward="true" selection-start-line="62" selection-start-column="5" selection-end-line="62" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -66,6 +85,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/src/DS/Listener.java" />
         <option value="$PROJECT_DIR$/src/DS/Client.java" />
       </list>
     </option>
@@ -97,6 +117,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -120,9 +142,7 @@
         </subPane>
       </pane>
       <pane id="AndroidView" />
-      <pane id="Scope" />
       <pane id="PackagesPane" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -133,7 +153,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15429688" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Distrit" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Servidor" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -278,14 +298,16 @@
       <workItem from="1509318484705" duration="4531000" />
       <workItem from="1509338747974" duration="1132000" />
       <workItem from="1509341583285" duration="19559000" />
+      <workItem from="1509417285588" duration="7954000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="81525000" />
+    <option name="totallyTimeSpent" value="89479000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -329,6 +351,14 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/DS/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/DS/Client.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -613,10 +643,20 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/apache/commons/codec/digest/Sha2Crypt.java" />
+    <entry file="file://$PROJECT_DIR$/src/DS/Listener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="508">
+          <caret line="62" column="5" lean-forward="true" selection-start-line="62" selection-start-column="5" selection-end-line="62" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/DS/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2040">
-          <caret line="43" column="22" lean-forward="true" selection-start-line="43" selection-start-column="22" selection-end-line="43" selection-end-column="22" />
+        <state relative-caret-position="-373">
+          <caret line="241" column="87" lean-forward="true" selection-start-line="241" selection-start-column="87" selection-end-line="241" selection-end-column="87" />
           <folding />
         </state>
       </provider>

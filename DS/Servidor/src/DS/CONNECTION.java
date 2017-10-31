@@ -45,8 +45,6 @@ public class CONNECTION implements Runnable {
             System.err.println("No se envio el datagrama");
         }
     }
-    //private DataInputStream is = null;
-    //private DataOutputStream os = null;
 
     public JSONObject getDA() {
         return DA;
@@ -133,8 +131,10 @@ public class CONNECTION implements Runnable {
                 }else if (fromclient.get("comando").equals("3")){
                     // El distrito pide un id unico para asignar
                     AtomicInteger ID= Server.getInstance().getUnico();
+                    JSONObject res = new JSONObject();
+                    res.put("ID",String.valueOf(ID.getAndIncrement()));
                     this.sendMessage(
-                            String.valueOf(ID.getAndIncrement()),
+                            res.toJSONString(),
                             this.receivePacket.getAddress(),
                             this.receivePacket.getPort());
 

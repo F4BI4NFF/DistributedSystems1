@@ -1,11 +1,15 @@
 package DS;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by breathtaKing on 07-06-2016.
@@ -37,10 +41,21 @@ public class CONNECTION implements Runnable {
         return new String(this.receivePacket.getData()).trim();
     }
     public void sendMessage(String line, InetAddress ServerIP, int port) {
+        System.out.println(line);
         sendData = line.getBytes();
         sendPacket = new DatagramPacket(sendData, sendData.length, ServerIP, port);
         try {
             ServerSocket.send(sendPacket);
+        } catch (IOException e) {
+            System.err.println("No se envio el datagrama");
+        }
+    }
+    public void sendMultiCast(String line, InetAddress ServerIP, int port) {
+        System.out.println(line);
+        sendData = line.getBytes();
+        sendPacket = new DatagramPacket(sendData, sendData.length, ServerIP, port);
+        try {
+            multisocket.send(sendPacket);
         } catch (IOException e) {
             System.err.println("No se envio el datagrama");
         }
@@ -57,31 +72,11 @@ public class CONNECTION implements Runnable {
     public void run(){
         //is = new DataInputStream(cs.getInputStream());
         //os = new DataOutputStream(cs.getOutputStream());
-        Console console = System.console();
+        //Console console = System.console();
         try{
             //String comando = is.readUTF();
             String comando = new String(this.receivePacket.getData()).trim();
             System.out.println(comando);
-            for (String cmd = console.readLine("[Distrito"+distrito.getDistritName()+"] Ingrese accion a realizar\n[Distrito"+distrito.getDistritName()+"] 1.- Publicar Titan\n[Distrito"+distrito.getDistritName()+"] x.- Para Salir\n");
-                 !cmd.equals("x");
-                 cmd = console.readLine("********************************\n[Distrito"+distrito.getDistritName()+"] Ingrese accion a realizar\n[Distrito"+distrito.getDistritName()+"] 1.- Publicar Titan\n[Distrito"+distrito.getDistritName()+"] x.- Para Salir\n")
-                    ){
-                if (cmd.equals("1")){
-                    //Se agrega un Titan
-                    String NombreTitan = console.readLine("[Distrito"+distrito.getDistritName()+"]Introducir nombre \n>");
-                    String TipoTitan = console.readLine("[Distrito"+distrito.getDistritName()+"]Introducir tipo :\n 1.- Normal\n 2.- Excentrico\n 3.- Cambiante\n > ");
-                    Titan titan = new Titan(NombreTitan,Integer.parseInt(TipoTitan),distrito.getID());
-                    System.out.println("[Distrito"+distrito.getDistritName()+"] Se ha publicado el titán"+ NombreTitan );
-                    System.out.println("*****************");
-                    System.out.println("ID: "+titan.getID_titan());
-                    System.out.println("Nombre: "+titan.getNombre_titan());
-                    System.out.println("Tipo: " + titan.getTipo_titan());
-                    System.out.println("*****************");
-                }
-                else{
-                    System.out.println("[Distrito"+distrito.getDistritName()+"] Comando invalido");
-                }
-            }
             System.out.println("Aqui en el servidor se ejecuta el comando : "+comando);
             processMsg(comando);
         }catch (CommandUnavailableException e) {
@@ -117,15 +112,6 @@ public class CONNECTION implements Runnable {
             try{
                 this.ListarTitanes();
 
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-        }
-        else if (obj.get("comando").equals("2")){
-            //Cambiar distrito
-            String name = obj.get("distrit").toString();
-            try{
-                this.ChangeDistrit(name);
             } catch (Exception e){
                 System.out.println(e.getMessage());
             }
@@ -173,7 +159,18 @@ public class CONNECTION implements Runnable {
     public void ListarTitanes() throws Exception{
         //os.writeUTF("Titanes en "+distrito.getDistritName()+":\n" + distrito.getLista_titanes());
         System.out.println("Hola soy Listar");
-        System.out.println(distrito.getLista_titanes());
+        JSONObject titanes = new JSONObject();
+        //List<Titan> list = new ArrayList<>();
+        for (Titan t: distrito.getLista_titanes()) {
+            JSONArray list = new JSONArray();
+            list.add(t.getNombre_titan());
+            list.add(t.getTipo_titan());
+            titanes.put(t.getID_titan(),list);
+        }
+        String response = titanes.toJSONString();
+        System.out.println("respuesta de titanes : "+response);
+        System.out.println(response);
+        sendMessage(response,receivePacket.getAddress(),receivePacket.getPort());
 
     }
     public void ListarCapturados() throws Exception{
@@ -187,10 +184,35 @@ public class CONNECTION implements Runnable {
     public void Capturar(int id) throws Exception{
         //os.writeUTF("Hola soy Capturar");
         System.out.println("Hola soy Capturar"+ id);
+        //List<Titan> list = new ArrayList<>();
+        String tipo = "";
+        for (Titan t : distrito.getLista_titanes()){
+            if (t.getID_titan() == id && (t.getTipo_titan() == 1 || t.getTipo_titan() == 3)) {
+                //Sacar y Capturar + multicast
+                distrito.getLista_titanes().remove(t);
+                distrito.getLista_titanes_capturados().add(t);
+                tipo = t.getNombreTip(t.getTipo_titan());
+                String mensaje = "[Cliente] Se ha capturado un titán! " + t.getNombre_titan() + ", tipo " + tipo + ", id " + t.getID_titan();
+                // Multicast
+                sendMultiCast(mensaje, InetAddress.getByName(distrito.getMultiCastIp()), distrito.getMultiCastPort());
+            }
+        }
+
     }
     public void Asesinar(int id) throws Exception {
         //os.writeUTF("Hola soy Asesinar");
         System.out.println("Hola soy Asesinar"+ id);
+        String tipo = "";
+        for (Titan t : distrito.getLista_titanes()){
+            if (t.getID_titan() == id && (t.getTipo_titan() == 1 || t.getTipo_titan() == 2)){
+                distrito.getLista_titanes().remove(t);
+                distrito.getLista_titanes_asesinados().add(t);
+                tipo = t.getNombreTip(t.getTipo_titan());
+                String mensaje = "[Cliente] Se ha asesinado un titán! "+t.getNombre_titan()+", tipo "+tipo+", id "+t.getID_titan();
+                // Multicast
+                sendMultiCast(mensaje,InetAddress.getByName(distrito.getMultiCastIp()),distrito.getMultiCastPort());
+            }
+        }
     }
     public void ChangeDistrit(String name) throws  Exception{
         //os.writeUTF("Hola soy cambio de distrito a "+name);

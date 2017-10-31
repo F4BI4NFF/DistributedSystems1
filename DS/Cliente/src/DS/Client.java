@@ -11,9 +11,11 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Client {
 
+    private MulticastSocket mSocket;
     private DatagramSocket ClientSocket;
     private DatagramPacket sendPacket;
     private DatagramPacket receivePacket;
@@ -45,6 +47,7 @@ public class Client {
         }
         return new String(receivePacket.getData()).trim();
     }
+
     public void sendMessage(String line,InetAddress ServerIP, int port) {
         sendData = line.getBytes();
         System.out.println(line);
@@ -161,6 +164,12 @@ public class Client {
 
                             cliente.ClientSocket = new DatagramSocket();
                             cliente.Conectado = true;
+                            cliente.mSocket = new MulticastSocket(cliente.getMultiCastPort());
+                            cliente.mSocket.joinGroup(InetAddress.getByName(cliente.getMultiCastIP()));
+
+                            Thread mt = new Thread(new Listener(InetAddress.getByName(cliente.getMultiCastIP()),cliente.getMultiCastPort()));
+                            mt.start();
+
 
                             //mostrar consola
                             System.out.println("[Cliente] Consola");
@@ -211,7 +220,9 @@ public class Client {
                                             cliente.setMultiCastPort(Integer.parseInt(String.valueOf(list.get(1))));
                                             cliente.setPeticionesIP(list.get(2));
                                             cliente.setPeticionesPort(Integer.parseInt(String.valueOf(list.get(3))));
-
+                                            mt.interrupt();
+                                            mt = new Thread(new Listener(InetAddress.getByName(cliente.getMultiCastIP()),cliente.getMultiCastPort()));
+                                            mt.start();
 
                                             //System.out.println("");
                                             System.out.println("Conexión autorizada para el Distrito de " + cliente.getDistritName());
@@ -227,6 +238,8 @@ public class Client {
                                     // Capturar titan,Asesinar titan
                                     //initString = initJSON(String.valueOf(cmd), param);
                                     //os.writeUTF(initString);
+                                    System.out.println("Capturar asesinar CLiente");
+                                    param = console.readLine("Ingrese id del titan :");
                                     cliente.sendMessage(initJSON(String.valueOf(cmd), param),
                                             InetAddress.getByName(cliente.getPeticionesIP()),
                                             cliente.getPeticionesPort());

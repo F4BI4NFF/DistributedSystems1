@@ -8,7 +8,6 @@ public class Titan {
     private String Nombre_titan;
     private int tipo_titan;
     private int ID_titan;
-    private static final AtomicInteger unico = new AtomicInteger(0);
 
     public String getNombre_titan() {
         return Nombre_titan;
@@ -34,11 +33,19 @@ public class Titan {
         this.ID_titan = ID_titan;
     }
 
-    //Creacion con ID unica.
-
-    Titan(){
-        this.setID_titan(unico.incrementAndGet());
+    public String getNombreTip(int tipo){
+        String result = "";
+        if (tipo == 1) {
+            result = "Normal";
+        }else if(tipo == 2){
+            result = "Excentrico";
+        }else if(tipo == 3){
+            result = "Cambiante";
+        }
+        return result;
     }
+
+    //Creacion con ID unica.
 
     Titan(String Nombre_titan, int tipo_titan, int ID_titan){
         this.Nombre_titan = Nombre_titan;
