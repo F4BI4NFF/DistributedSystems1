@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by breathtaKing on 07-06-2016.
+ * Clase que se encarga de manejar las respuestas de las peticiones del servidor
  */
 public class CONNECTION implements Runnable {
     private DatagramSocket ServerSocket;
@@ -39,7 +40,7 @@ public class CONNECTION implements Runnable {
         return new String(this.receivePacket.getData()).trim();
     }
     public void sendMessage(String line, InetAddress ServerIP, int port) {
-        System.out.println(line);
+        //System.out.println(line);
         sendData = line.getBytes();
         sendPacket = new DatagramPacket(sendData, sendData.length, ServerIP, port);
         try {
@@ -69,15 +70,19 @@ public class CONNECTION implements Runnable {
         //System.out.println(socket.getLocalPort());
     }
 
+    /**
+     * Resumen : menu, procesar solicitud, responder la solicitud
+     */
     @Override
     public void run(){
         try {
             String comando = new String(this.receivePacket.getData()).trim();
-            System.out.println(comando);
+            //System.out.println(comando);
 
             JSONObject fromclient = processJSON(comando);
             Console console = System.console();
-            System.out.println(fromclient.get("tipo"));
+            //System.out.println(fromclient.get("tipo"));
+            //Decide entre 2 tiposde solicitud que recibe
             if (fromclient.get("tipo").equals("Cliente")){
                 System.out.println("aqui");
                 for(String cmd =console.readLine(
@@ -87,13 +92,22 @@ public class CONNECTION implements Runnable {
 
                     if(cmd.equals("1")){
                         JSONObject mensaje = getDA();
-                        System.out.println(mensaje.get(fromclient.get("nombre")));
+                        //System.out.println(mensaje.get(fromclient.get("nombre")));
                         JSONArray conectiondata = (JSONArray) mensaje.get(fromclient.get("nombre"));
                         JSONObject respuesta = new JSONObject();
                         respuesta.put("response","aceptado");
                         respuesta.put("datos",conectiondata);
                         //Enviar info por UDP
-                        System.out.println(respuesta.toJSONString());
+                        //System.out.println(respuesta.toJSONString());
+
+                        //Agrega el cliente conectado
+                        for(Cliente c :servidor.getClienteConectados()){
+                            //Estaconectadoya
+                            if(c.IpCliente == receivePacket.getAddress()){
+                                servidor.getClienteConectados().remove(c);
+                            }
+                        }
+                        servidor.getClienteConectados().add(new Cliente(receivePacket.getAddress(),receivePacket.getPort(),fromclient.get("nombre").toString()));
 
                         this.sendMessage(
                                 respuesta.toJSONString(),
@@ -190,7 +204,7 @@ public class CONNECTION implements Runnable {
 
     public void ListarCapturados(String ip,String puerto) throws Exception{
         //os.writeUTF("Hola soy Listar Capturados");
-        System.out.println("Hola soy L Capturados");
+        //System.out.println("Hola soy L Capturados");
         //Enviar respuesta
         String mensaje = "{}";
         JSONObject titanes = new JSONObject();
@@ -212,7 +226,7 @@ public class CONNECTION implements Runnable {
     }
     public void ListarAsesinados(String ip,String puerto) throws Exception{
         //os.writeUTF("Hola soy Listar Asesinados");
-        System.out.println("Hola soy L Asesinados");
+        //System.out.println("Hola soy L Asesinados");
         //Enviar respuesta
         String mensaje = "{}";
         JSONObject titanes = new JSONObject();

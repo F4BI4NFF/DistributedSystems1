@@ -7,6 +7,9 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
+/**
+ * Clase que se encarga de notificar y publicar a los titanes dentro de un distrito
+ */
 public class Notify implements Runnable{
     Distrit distrito;
     byte[] sendData;
@@ -15,12 +18,12 @@ public class Notify implements Runnable{
 
 
     public Notify(Distrit Distrito,MulticastSocket ms){
-        System.out.println("datos notify: "+Distrito.getCentralPort()+" ad" + Distrito.getCentralIP());
+        //System.out.println("datos notify: "+Distrito.getCentralPort()+" ad" + Distrito.getCentralIP());
         this.distrito = Distrito;
         this.multicastSocket = ms;
     }
     public void sendMultiCast(String line, InetAddress ServerIP, int port) {
-        System.out.println(line);
+        //System.out.println(line);
         sendData = line.getBytes();
         sendPacket = new DatagramPacket(sendData, sendData.length, ServerIP, port);
         try {

@@ -1,5 +1,6 @@
 package DS;
 
+import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -58,6 +59,16 @@ public class Server {
         return servidor;
 
     }
+
+    public List<Cliente> getClienteConectados() {
+        return ClienteConectados;
+    }
+
+    public void setClienteConectados(List<Cliente> clienteConectados) {
+        ClienteConectados = clienteConectados;
+    }
+
+    List<Cliente> ClienteConectados = new ArrayList<Cliente>();
 
     List<Titan> lista_titanes_capturados = Collections.synchronizedList(new ArrayList<Titan>());
     List<Titan> lista_titanes_asesinados = Collections.synchronizedList(new ArrayList<Titan>());
@@ -129,7 +140,7 @@ public class Server {
                             System.exit(-1);
                         }
                         //Socket cs = listenSocket.accept();
-                        System.out.println("packet:"+ new String(receivePacket.getData()).trim());
+                        //System.out.println("packet:"+ new String(receivePacket.getData()).trim());
                         System.out.println("Nueva conexion entrante: "+ receivePacket.getAddress());
                         System.out.println("Puerto: " + receivePacket.getPort() );
 

@@ -50,7 +50,7 @@ public class Client {
 
     public void sendMessage(String line,InetAddress ServerIP, int port) {
         sendData = line.getBytes();
-        System.out.println(line);
+        //System.out.println(line);
         sendPacket = new DatagramPacket(sendData, sendData.length, ServerIP, port);
         try {
             ClientSocket.send(sendPacket);
@@ -144,7 +144,7 @@ public class Client {
                             InetAddress.getByName(cliente.getCentralServerIP()),
                             cliente.getCentralServerPort());
                     String fromserver = cliente.getMessage();
-                    System.out.println("recibido del server: "+fromserver);
+                    //System.out.println("recibido del server: "+fromserver);
                     JSONObject fromserverobj = processJSON(fromserver);
                     if (fromserverobj.get("response").equals("aceptado")) {
                         //Conexion aceptada
@@ -187,8 +187,9 @@ public class Client {
                                             cliente.getPeticionesPort());
                                     //cliente.getMessage();
                                     fromserver = cliente.getMessage();
-                                    System.out.println("UDP desde el server : " + fromserver);
-                                    System.out.println("----------------------------------");
+                                    //Titanes
+                                    System.out.println(fromserver);
+                                    //System.out.println("----------------------------------");
 
                                 } else if (cmd.equals("2")) {
                                     if (!cliente.Conectado) {
@@ -202,7 +203,7 @@ public class Client {
                                                 InetAddress.getByName(cliente.getCentralServerIP()),
                                                 cliente.getCentralServerPort());
                                         fromserver = cliente.getMessage();
-                                        System.out.println("mensaje buscador : "+fromserver);
+                                        //System.out.println("mensaje buscador : "+fromserver);
                                         fromserverobj = processJSON(fromserver);
                                         if (fromserverobj.get("response").equals("aceptado")) {
                                             //Conexion aceptada
@@ -238,7 +239,7 @@ public class Client {
                                     // Capturar titan,Asesinar titan
                                     //initString = initJSON(String.valueOf(cmd), param);
                                     //os.writeUTF(initString);
-                                    System.out.println("Capturar asesinar CLiente");
+                                    //System.out.println("Capturar asesinar CLiente");
                                     param = console.readLine("Ingrese id del titan :");
                                     cliente.sendMessage(initJSON(String.valueOf(cmd), param),
                                             InetAddress.getByName(cliente.getPeticionesIP()),
@@ -257,7 +258,8 @@ public class Client {
                                     //Se espera una respuesta?
                                     System.out.println("se espera respuesta...");
                                     fromserver = cliente.getMessage();
-                                    System.out.println("Mensaje L : "+fromserver);
+                                    System.out.println("Lista : "+fromserver);
+                                    System.out.println("--------------------");
                                     //fromserverobj = processJSON(fromserver);
 
                                 } else {
@@ -286,6 +288,12 @@ public class Client {
             System.out.println("Linea: " + e2.getMessage());
         }
     }
+
+    /**
+     * Funciones para codificar datagrama
+     * @param mode
+     * @return
+     */
     private static String initJSONfirst(String mode){
         JSONObject obj = new JSONObject();
         obj.put("nombre",mode);
@@ -308,6 +316,12 @@ public class Client {
         }
         return obj.toJSONString();
     }
+
+    /**
+     * Funcion para decodificar datagrama
+     * @param mensaje
+     * @return
+     */
     public static JSONObject processJSON(String mensaje){
         JSONObject obj = null;
         JSONParser parser = new JSONParser();

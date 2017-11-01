@@ -14,6 +14,10 @@ import java.util.List;
 /**
  * Created by breathtaKing on 07-06-2016.
  */
+
+/**
+ * Clase que se encarga del mensaje que recibe el distrito
+ */
 public class CONNECTION implements Runnable {
     private MulticastSocket multisocket;
     private Distrit distrito;
@@ -44,7 +48,7 @@ public class CONNECTION implements Runnable {
         return new String(this.receivePacket.getData()).trim();
     }
     public void sendMessage(String line, InetAddress ServerIP, int port) {
-        System.out.println(line);
+        //System.out.println(line);
         sendData = line.getBytes();
         sendPacket = new DatagramPacket(sendData, sendData.length, ServerIP, port);
         try {
@@ -54,7 +58,7 @@ public class CONNECTION implements Runnable {
         }
     }
     public void sendMultiCast(String line, InetAddress ServerIP, int port) {
-        System.out.println(line);
+        //System.out.println(line);
         sendData = line.getBytes();
         sendPacket = new DatagramPacket(sendData, sendData.length, ServerIP, port);
         try {
@@ -81,14 +85,21 @@ public class CONNECTION implements Runnable {
         try{
             //String comando = is.readUTF();
             String comando = new String(this.receivePacket.getData()).trim();
-            System.out.println(comando);
-            System.out.println("Aqui en el servidor se ejecuta el comando : "+comando);
+            //System.out.println(comando);
+            //System.out.println("Aqui en el servidor se ejecuta el comando : "+comando);
             processMsg(comando);
         }catch (CommandUnavailableException e) {
             System.out.println(e);
             assert (false);
         }
     }
+
+    /**
+     *  Las siguientes funciones realmente pudo ser 1 sola, peor no . todas hacen basicamente codificar el mensaje
+     *  que se envia
+     * @param mode
+     * @return
+     */
     private static String initJSONfirst(String mode){
         JSONObject obj = new JSONObject();
         obj.put("nombre",mode);
@@ -128,6 +139,12 @@ public class CONNECTION implements Runnable {
         obj.put("datos",ls);
         return obj.toJSONString();
     }
+
+    /**
+     * La funcion procesa el mensaje que recibe, osea decofica el JSONstring que recibe
+     * @param jsonString
+     * @throws CommandUnavailableException
+     */
     public void processMsg(String jsonString) throws CommandUnavailableException{
         JSONObject obj = null;
         JSONParser parser = new JSONParser();
@@ -209,10 +226,15 @@ public class CONNECTION implements Runnable {
         }
     }
 
+    /**
+     * Desencadenadores de los la logica principal del juego.
+     * Cada funcion en resumen envia algo al cliente.
+     * @throws Exception
+     */
 
     public void ListarTitanes() throws Exception{
         //os.writeUTF("Titanes en "+distrito.getDistritName()+":\n" + distrito.getLista_titanes());
-        System.out.println("Hola soy Listar");
+        //System.out.println("Hola soy Listar");
         JSONObject titanes = new JSONObject();
         //List<Titan> list = new ArrayList<>();
         for (Titan t: distrito.getLista_titanes()) {
@@ -222,14 +244,14 @@ public class CONNECTION implements Runnable {
             titanes.put(t.getID_titan(),list);
         }
         String response = titanes.toJSONString();
-        System.out.println("respuesta de titanes : "+response);
+        //System.out.println("respuesta de titanes : "+response);
         System.out.println(response);
         sendMessage(response,clienthost,clientport);
 
     }
     public void ListarCapturados() throws Exception{
         //os.writeUTF("Hola soy Listar Capturados");
-        System.out.println("Hola soy L Capturados");
+        //System.out.println("Hola soy L Capturados");
         //String mensaje = initJSON("1","Distrito");
         String mensaje = redirigir("1","Distrito",receivePacket.getAddress().getHostAddress(),receivePacket.getPort());
         //sendMessage("ack c",receivePacket.getAddress(),receivePacket.getPort());
@@ -239,7 +261,7 @@ public class CONNECTION implements Runnable {
     }
     public void ListarAsesinados() throws Exception{
         //os.writeUTF("Hola soy Listar Asesinados");
-        System.out.println("Hola soy L Asesinados");
+        //System.out.println("Hola soy L Asesinados");
         //String mensaje = initJSON("2","Distrito");
         String mensaje = redirigir("2","Distrito",receivePacket.getAddress().getHostAddress(),receivePacket.getPort());
         //sendMessage("ack a",receivePacket.getAddress(),receivePacket.getPort());
@@ -267,7 +289,7 @@ public class CONNECTION implements Runnable {
     }
     public void Asesinar(int id) throws Exception {
         //os.writeUTF("Hola soy Asesinar");
-        System.out.println("Hola soy Asesinar"+ id);
+        //System.out.println("Hola soy Asesinar"+ id);
         String tipo = "";
         for (Titan t : distrito.getLista_titanes()){
             if (t.getID_titan() == id && (t.getTipo_titan() == 1 || t.getTipo_titan() == 2)){

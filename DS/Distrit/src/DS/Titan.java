@@ -3,6 +3,9 @@ package DS;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Clase que describe un titan
+ */
 public class Titan {
 
     private String Nombre_titan;
