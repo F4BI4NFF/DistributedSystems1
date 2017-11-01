@@ -122,10 +122,10 @@ public class CONNECTION implements Runnable {
             }else if (fromclient.get("tipo").equals("Distrito")){
                 if (fromclient.get("comando").equals("1")){
                     // Logica recepcion de lista (Capturados/Asesinados Globales)
-                    this.ListarCapturados();
+                    this.ListarCapturados(fromclient.get("ip").toString(),fromclient.get("po").toString());
                 }else if (fromclient.get("comando").equals("2")){
                     // Logica envio de peticion de lista (Capturados/Asesinados Globales)
-                    this.ListarAsesinados();
+                    this.ListarAsesinados(fromclient.get("ip").toString(),fromclient.get("po").toString());
                 }else if (fromclient.get("comando").equals("3")){
                     // El distrito pide un id unico para asignar
                     AtomicInteger ID= Server.getInstance().getUnico();
@@ -188,7 +188,7 @@ public class CONNECTION implements Runnable {
         return obj;
     }
 
-    public void ListarCapturados() throws Exception{
+    public void ListarCapturados(String ip,String puerto) throws Exception{
         //os.writeUTF("Hola soy Listar Capturados");
         System.out.println("Hola soy L Capturados");
         //Enviar respuesta
@@ -206,9 +206,11 @@ public class CONNECTION implements Runnable {
         JSONObject obj = new JSONObject();
         obj.put("comando","7");
         obj.put("mensaje",mensaje);
+        obj.put("ip",ip);
+        obj.put("po",Integer.parseInt(puerto));
         sendMessage(obj.toJSONString(),receivePacket.getAddress(),receivePacket.getPort());
     }
-    public void ListarAsesinados() throws Exception{
+    public void ListarAsesinados(String ip,String puerto) throws Exception{
         //os.writeUTF("Hola soy Listar Asesinados");
         System.out.println("Hola soy L Asesinados");
         //Enviar respuesta
@@ -226,6 +228,8 @@ public class CONNECTION implements Runnable {
         JSONObject obj = new JSONObject();
         obj.put("comando","7");
         obj.put("mensaje",mensaje);
+        obj.put("ip",ip);
+        obj.put("po",Integer.parseInt(puerto));
         sendMessage(obj.toJSONString(),receivePacket.getAddress(),receivePacket.getPort());
     }
 }

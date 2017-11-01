@@ -255,10 +255,10 @@ public class Client {
                                             cliente.getPeticionesPort());
 
                                     //Se espera una respuesta?
-
+                                    System.out.println("se espera respuesta...");
                                     fromserver = cliente.getMessage();
                                     System.out.println("Mensaje L : "+fromserver);
-                                    fromserverobj = processJSON(fromserver);
+                                    //fromserverobj = processJSON(fromserver);
 
                                 } else {
                                     System.out.println("Comando no válido");
@@ -266,7 +266,7 @@ public class Client {
 
                             }
                         }catch (NullPointerException e){
-                            System.out.println(msg);
+                            System.out.println("msg: "+msg+" e :"+e.getMessage());
                         }
 
 

@@ -103,6 +103,18 @@ public class CONNECTION implements Runnable {
         obj.put("tipo",name);
         return obj.toJSONString();
     }
+    private static String redirigir(String mode,String name,String ip,int port){
+        //Para codificar el comando que se envia al servidor
+        JSONObject obj = new JSONObject();
+        obj.put("comando",mode);
+        // name comodin por si se necesita modificar a gusto
+        obj.put("tipo",name);
+        //JSONArray ls = new JSONArray();
+        //ls.add(ip);ls.add(port);
+        obj.put("ip",ip);
+        obj.put("po",port);
+        return obj.toJSONString();
+    }
     private static String unitJSON(String comando,String nombre,int tipo,int id){
         //Para codificar el comando que se envia al servidor
         JSONObject obj = new JSONObject();
@@ -171,6 +183,8 @@ public class CONNECTION implements Runnable {
         else if (obj.get("comando").equals("7")){
             //Redirigir
             //Recibir del server central
+            String ip = obj.get("ip").toString();
+            int puerto = Integer.parseInt(obj.get("po").toString() ) ;
             JSONParser parser1 = new JSONParser();
             try {
                 obj = (JSONObject) parser1.parse((String)obj.get("mensaje"));
@@ -179,8 +193,16 @@ public class CONNECTION implements Runnable {
                 System.exit(-1);
             }
             JSONObject fromserver = obj;
+
+            System.out.println("debug : "+ip+ " p "+puerto);
             //Enviar al cliente
-            sendMessage(fromserver.toJSONString(),clienthost,clientport);
+            System.out.println("Se envia al cliente lo sig : "+fromserver.toJSONString());
+            try{
+                sendMessage(fromserver.toJSONString(),InetAddress.getByName(ip),puerto);
+
+            }catch (UnknownHostException e){
+                System.out.println("Host invalido");
+            }
         }
         else {
             System.out.println("Comando invalido ha llegado al distrito");
@@ -208,7 +230,9 @@ public class CONNECTION implements Runnable {
     public void ListarCapturados() throws Exception{
         //os.writeUTF("Hola soy Listar Capturados");
         System.out.println("Hola soy L Capturados");
-        String mensaje = initJSON("1","Distrito");
+        //String mensaje = initJSON("1","Distrito");
+        String mensaje = redirigir("1","Distrito",receivePacket.getAddress().getHostAddress(),receivePacket.getPort());
+        //sendMessage("ack c",receivePacket.getAddress(),receivePacket.getPort());
         sendMessage(mensaje,InetAddress.getByName(distrito.getCentralIP()),distrito.getCentralPort());
 
 
@@ -216,7 +240,9 @@ public class CONNECTION implements Runnable {
     public void ListarAsesinados() throws Exception{
         //os.writeUTF("Hola soy Listar Asesinados");
         System.out.println("Hola soy L Asesinados");
-        String mensaje = initJSON("2","Distrito");
+        //String mensaje = initJSON("2","Distrito");
+        String mensaje = redirigir("2","Distrito",receivePacket.getAddress().getHostAddress(),receivePacket.getPort());
+        //sendMessage("ack a",receivePacket.getAddress(),receivePacket.getPort());
         sendMessage(mensaje,InetAddress.getByName(distrito.getCentralIP()),distrito.getCentralPort());
     }
     public void Capturar(int id) throws Exception{
