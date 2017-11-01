@@ -7,14 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cbb273e7-3322-424b-8cab-4032e29c9e28" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Distrit/out/artifacts/Distrit_jar/Distrit.jar" afterPath="$PROJECT_DIR$/../Distrit/out/artifacts/Distrit_jar/Distrit.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/out/artifacts/Servidor_jar/Servidor.jar" afterPath="$PROJECT_DIR$/../Servidor/out/artifacts/Servidor_jar/Servidor.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DS/Client.java" afterPath="$PROJECT_DIR$/src/DS/Client.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Distrit/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../Distrit/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Distrit/src/DS/CONNECTION.java" afterPath="$PROJECT_DIR$/../Distrit/src/DS/CONNECTION.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../Servidor/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Servidor/src/DS/CONNECTION.java" afterPath="$PROJECT_DIR$/../Servidor/src/DS/CONNECTION.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -29,8 +23,8 @@
       <file leaf-file-name="Client.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/DS/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="494">
-              <caret line="275" column="13" lean-forward="true" selection-start-line="275" selection-start-column="13" selection-end-line="275" selection-end-column="13" />
+            <state relative-caret-position="375">
+              <caret line="268" column="69" lean-forward="true" selection-start-line="268" selection-start-column="69" selection-end-line="268" selection-end-column="69" />
               <folding />
             </state>
           </provider>
@@ -142,10 +136,10 @@
     <property name="project.structure.proportion" value="0.15429688" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../Servidor" />
-    <property name="GenerateAntBuildDialog.enableUiFormCompile" value="true" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="true" />
-    <property name="GenerateAntBuildDialog.backupFiles" value="true" />
     <property name="GenerateAntBuildDialog.outputFileNameProperty" value="cliente" />
+    <property name="GenerateAntBuildDialog.generateSingleFile" value="true" />
+    <property name="GenerateAntBuildDialog.inclineRuntiemClasspath" value="true" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -291,16 +285,15 @@
       <workItem from="1509338747974" duration="1132000" />
       <workItem from="1509341583285" duration="19559000" />
       <workItem from="1509417285588" duration="14097000" />
-      <workItem from="1509486735873" duration="6328000" />
+      <workItem from="1509486735873" duration="7039000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="101950000" />
+    <option name="totallyTimeSpent" value="102661000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -315,7 +308,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22108346" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22108346" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -666,8 +659,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DS/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="275" column="13" lean-forward="true" selection-start-line="275" selection-start-column="13" selection-end-line="275" selection-end-column="13" />
+        <state relative-caret-position="375">
+          <caret line="268" column="69" lean-forward="true" selection-start-line="268" selection-start-column="69" selection-end-line="268" selection-end-column="69" />
           <folding />
         </state>
       </provider>
